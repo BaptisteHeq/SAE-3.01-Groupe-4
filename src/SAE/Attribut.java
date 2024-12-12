@@ -2,9 +2,9 @@ package SAE;
 
 public class Attribut {
     private String nom;
-    private String type;
+    private int type; // 0 = void, 1 = int, 2 = String, 3 = boolean
 
-    public Attribut(String nom, String type) {
+    public Attribut(String nom, int type) {
         this.nom = nom;
         this.type = type;
     }
@@ -13,7 +13,7 @@ public class Attribut {
         return this.nom;
     }
 
-    public String getType() {
+    public int getType() {
         return this.type;
     }
 
@@ -21,7 +21,7 @@ public class Attribut {
         this.nom = nom;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 }
