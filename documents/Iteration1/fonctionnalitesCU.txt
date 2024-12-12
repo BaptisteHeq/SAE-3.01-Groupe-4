@@ -1,0 +1,10 @@
+Importer un fichier Java.
+
+Etapes:
+-Création de la fenêtre de l'application.
+-Création du bouton file, et du choix importer fichier.
+-Création de la classe Classe, de son fabrique, et d'une classe ImporteurProjet.
+
+Fonctionnalités:
+-Importer un fichier Java.
+
