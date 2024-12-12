@@ -13,8 +13,8 @@ public class ImporteurProjet {
         this.repertoire = repertoire;
     }
 
-    public List<Classe> importerProjet(String chemin){
-        File dossier = new File(chemin);
+    public List<Classe> importerProjet(){
+        File dossier = new File(repertoire);
         List<Classe> classes = new ArrayList<>();
         if(dossier.isDirectory()){
             File[] fichiers = dossier.listFiles();
