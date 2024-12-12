@@ -1,0 +1,47 @@
+@startuml
+title Diagramme de classes de la 1ère itération
+
+class Classe{
+    - nom : String
+    - acces : int
+    + Classe(String nom, int acces)
+    + addMethode(Methode methode) : void
+    + addAttribut(Attribut attribut) : void
+    + removeAttribut(Attribut attribut) : void
+    + getAttributs() : List<Attribut>
+    + removeMethode(Methode methode) : void
+    + getMethodes() : List<Methode>
+    + String getNom() : String
+}
+
+class Methode{
+    - acces : int
+    - nom : String
+    - typeRetour : int
+    + Methode(String nom, int typeRetour, List<Attribut> parametres)
+    + getAcces() : int
+    + getNom() : String
+    + getTypeRetour() : int
+    + getParametres() : List<Attribut>
+}
+
+class Attribut{
+    - nom : String
+    - type : String
+    + Attribut(String nom, String type)
+    + getNom() : String
+    + getType() : String
+    + setNom(String nom) : void
+    + setType(String type) : void
+}
+
+class ImporteurProjet{
+    + ImporteurProjet()
+    + importerProjet(String path) : Projet
+}
+
+Classe "1"--> "0..*"Methode : - méthodes : List<Methode>
+Classe "1"--> "0..*"Attribut : - attributs : List<Attribut>
+
+Methode "1"--> "0..*"Attribut : - paramètres : List<Attribut>
+@enduml
