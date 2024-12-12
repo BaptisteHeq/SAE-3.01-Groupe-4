@@ -46,39 +46,17 @@ public class ImporteurProjet {
             Classe classe = new Classe(c.getName(),acces);
             for(Method methode : methodes){
                 Class<?> p = methode.getReturnType();
-                int typeRetour = 0;
-                if(p.equals(int.class))
-                    typeRetour = 1;
-                if(p.equals(String.class))
-                    typeRetour = 2;
-                if (p.equals(boolean.class))
-                    typeRetour = 3;
-
                 List<Attribut> parametres = new ArrayList<>();
                 for(Parameter param : methode.getParameters()){
-                    int typeParam=0;
-                    if(param.getType().equals(int.class))
-                        typeParam = 1;
-                    if(param.getType().equals(String.class))
-                        typeParam = 2;
-                    if(param.getType().equals(boolean.class))
-                        typeParam = 3;
-                    parametres.add(new Attribut(param.getName(),typeParam));
+                    parametres.add(new Attribut(param.getName(),param.getType()));
                 }
-                Methode classMet = new Methode(methode.getModifiers(),methode.getName(),typeRetour,parametres);
+                Methode classMet = new Methode(methode.getModifiers(),methode.getName(),p,parametres);
                 classe.addMethode(classMet);
             }
             Field[] attributs = c.getDeclaredFields();
             for(Field attribut : attributs){
-                Class<?> p = attribut.getType();
-                int typeAttribut = 0;
-                if(p.equals(int.class))
-                    typeAttribut = 1;
-                if(p.equals(String.class))
-                    typeAttribut = 2;
-                if(p.equals(boolean.class))
-                    typeAttribut = 3;
-                Attribut classAttr = new Attribut(attribut.getName(),typeAttribut);
+                Class<?> p2 = attribut.getType();
+                Attribut classAttr = new Attribut(attribut.getName(),p2);
                 classe.addAttribut(classAttr);
             }
             return classe;

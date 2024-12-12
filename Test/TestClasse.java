@@ -18,7 +18,7 @@ public class TestClasse{
     @Test
     public void testGetMethodes() {
         Classe c = new Classe("nom",0);
-        Methode m = new Methode(0, "methode", 0, new ArrayList<>());
+        Methode m = new Methode(0, "methode", String.class, new ArrayList<>());
         c.addMethode(m);
         assertEquals("methode", c.getMethodes().get(0).getNom());
     }
@@ -26,7 +26,7 @@ public class TestClasse{
     @Test
     public void testRemoveMethodes() {
         Classe c = new Classe("nom",0);
-        Methode m = new Methode(0, "methode", 0, new ArrayList<>());
+        Methode m = new Methode(0, "methode", String.class, new ArrayList<>());
         c.addMethode(m);
         int size1 = c.getMethodes().size();
         c.removeMethode(m);
@@ -38,7 +38,7 @@ public class TestClasse{
     @Test
     public void testAddAttribut() {
         Classe c = new Classe("nom",0);
-        Attribut a = new Attribut("attribut", "String");
+        Attribut a = new Attribut("attribut", String.class);
         c.addAttribut(a);
         assertEquals("attribut", c.getAttributs().get(0).getNom());
     }
@@ -46,7 +46,7 @@ public class TestClasse{
     @Test
     public void testRemoveAttribut() {
         Classe c = new Classe("nom",0);
-        Attribut a = new Attribut("attribut", "String");
+        Attribut a = new Attribut("attribut", String.class);
         c.addAttribut(a);
         int size1 = c.getAttributs().size();
         c.removeAttribut(a);

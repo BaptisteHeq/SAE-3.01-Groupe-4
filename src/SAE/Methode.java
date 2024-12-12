@@ -5,10 +5,10 @@ import java.util.List;
 public class Methode {
     private int acces; // 0 = public, 1 = protected, 2 = private
     private String nom;
-    private int typeRetour; // 0 = void, 1 = int, 2 = String, 3 = boolean
+    private Class typeRetour;
     private List<Attribut> parametres;
 
-    public Methode(int acces, String nom, int typeRetour, List<Attribut> parametres) {
+    public Methode(int acces, String nom, Class typeRetour, List<Attribut> parametres) {
         this.acces = acces;
         this.nom = nom;
         this.typeRetour = typeRetour;
@@ -23,7 +23,7 @@ public class Methode {
         return this.nom;
     }
 
-    public int getTypeRetour() {
+    public Class getTypeRetour() {
         return this.typeRetour;
     }
 
