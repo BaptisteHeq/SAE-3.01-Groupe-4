@@ -17,27 +17,31 @@ class Classe{
 class Methode{
     - acces : int
     - nom : String
-    - typeRetour : int
-    + Methode(String nom, int typeRetour, List<Attribut> parametres)
+    - typeRetour : Class
+    + Methode(String nom, Class typeRetour, List<Attribut> parametres)
     + getAcces() : int
     + getNom() : String
-    + getTypeRetour() : int
+    + getTypeRetour() : Class
     + getParametres() : List<Attribut>
 }
 
 class Attribut{
     - nom : String
-    - type : String
-    + Attribut(String nom, String type)
+    - acces : int
+    - type : Class
+    + Attribut(String nom, Class type)
+    + Attribut(String nom, Class type, int acces)
     + getNom() : String
-    + getType() : String
+    + getType() : Class
     + setNom(String nom) : void
-    + setType(String type) : void
+    + setType(Class type) : void
 }
 
 class ImporteurProjet{
+    - repertoire : String
     + ImporteurProjet()
-    + importerProjet(String path) : Projet
+    + importerProjet(String chemin) : List<Classe>
+    + importerFichier(File fichier) : Classe
 }
 
 Classe "1"--> "0..*"Methode : - méthodes : List<Methode>
