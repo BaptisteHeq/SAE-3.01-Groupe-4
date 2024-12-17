@@ -8,3 +8,8 @@ Etapes:
 Fonctionnalités:
 -Importer un fichier Java.
 
+Scénarios :
+- Cliquer sur le bouton "Fichier" -> Cliquer sur le bouton "Importer" :
+    Possibilité 1 : Séléctionner un répertoire LOCAL au projet avec des classes Java
+    Possibilité 2 : Séléctionner un répertoire LOCAL au projet sans classes Java
+    Possibilité 3 : Séléctionner un répertoire LOCAL au projet vide
