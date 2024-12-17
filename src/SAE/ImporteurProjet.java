@@ -1,67 +1,101 @@
 package SAE;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ImporteurProjet {
-    public String repertoire;
 
-    public ImporteurProjet(String repertoire){
-        this.repertoire = repertoire;
+    public ImporteurProjet(){
     }
 
-    public List<Classe> importerProjet(){
-        File dossier = new File(repertoire);
+    /**
+     * Importe toutes les classes Java d'un dossier donné
+     * @param chemin Le chemin du dossier à analyser
+     * @return La liste des classes importées
+     */
+    public List<Classe> importerProjet(String chemin) {
+        File dossier = new File(chemin);
         List<Classe> classes = new ArrayList<>();
-        if(dossier.isDirectory()){
+
+        if (dossier.isDirectory()) {
             File[] fichiers = dossier.listFiles();
-            if(fichiers!=null){
-                for(File fichier : fichiers){
-                    if(fichier.isFile()){
-                        classes.add(importerFichier(fichier.getAbsolutePath()));
+
+            if (fichiers != null) {
+                for (File fichier : fichiers) {
+                    if (fichier.isFile() && fichier.getName().endsWith(".java")) { // Vérifie si c'est un fichier Java
+                        Classe classeImportee = importerFichier(fichier);
+                        if (classeImportee != null) {
+                            classes.add(classeImportee);
+                        }
                     }
                 }
+            } else {
+                System.out.println("Il n'y a aucun fichier à importer dans votre répertoire.");
             }
-            else{
-                System.out.println("Il n'y a aucun fichier java à importer dans votre répertoire");
-            }
+        } else {
+            System.out.println("Le chemin indiqué n'est pas un répertoire.");
         }
+
         return classes;
     }
 
-    public Classe importerFichier(String chemin){
-        try{
-            Class<?> c = Class.forName(chemin);
-            Method[] methodes = c.getDeclaredMethods();
-            int m = c.getModifiers();
-            int acces = 0;
-            if(Modifier.isProtected(m))
-                acces = 1;
-            if(Modifier.isPrivate(m))
-                acces = 2;
+    /**
+     * Importe une seule classe Java à partir d'un fichier
+     * @param fichier Le fichier de la classe
+     * @return Un objet Classe correspondant au fichier
+     */
+    public Classe importerFichier(File fichier) {
+        try {
+            // On convertit le chemin du fichier en nom de classe
+            String cheminClasse = fichier.getAbsolutePath()
+                    .replace(File.separator, ".")
+                    .replace(".java", "")
+                    .replaceFirst("^.*src\\.", ""); // Suppose que le chemin commence par src/ pour obtenir le bon nom de package
 
-            Classe classe = new Classe(c.getName(),acces);
-            for(Method methode : methodes){
-                Class<?> p = methode.getReturnType();
+            // Charge la classe à partir de son nom complet
+            Class<?> c = Class.forName(cheminClasse);
+
+            // Récupère les modificateurs de la classe (public, protected, etc.)
+            int modificateurs = c.getModifiers();
+            int acces = 0;
+            if (Modifier.isProtected(modificateurs)) acces = 1;
+            else if (Modifier.isPrivate(modificateurs)) acces = 2;
+
+            // Crée l'objet Classe avec le nom et le niveau d'accès
+            Classe classe = new Classe(c.getName(), acces);
+
+            // Récupère les méthodes de la classe
+            Method[] methodes = c.getDeclaredMethods();
+            for (Method methode : methodes) {
+                Class<?> typeRetour = methode.getReturnType();
                 List<Attribut> parametres = new ArrayList<>();
-                for(Parameter param : methode.getParameters()){
-                    parametres.add(new Attribut(param.getName(),param.getType()));
+
+                for (Parameter param : methode.getParameters()) {
+                    parametres.add(new Attribut(param.getName(), param.getType()));
                 }
-                Methode classMet = new Methode(methode.getModifiers(),methode.getName(),p,parametres);
+
+                Methode classMet = new Methode(methode.getModifiers(), methode.getName(), typeRetour, parametres);
                 classe.addMethode(classMet);
             }
+
+            // Récupère les champs (attributs) de la classe
             Field[] attributs = c.getDeclaredFields();
-            for(Field attribut : attributs){
-                Class<?> p2 = attribut.getType();
-                Attribut classAttr = new Attribut(attribut.getName(),p2);
+            for (Field attribut : attributs) {
+                Class<?> typeAttribut = attribut.getType();
+                Attribut classAttr = new Attribut(attribut.getName(), typeAttribut);
                 classe.addAttribut(classAttr);
             }
+
             return classe;
+
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            System.err.println("Classe non trouvée : " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'importation du fichier : " + e.getMessage());
+            return null;
         }
     }
 }
