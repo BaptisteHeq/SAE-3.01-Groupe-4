@@ -1,0 +1,25 @@
+@startuml
+main -> ExportateurSourcePlantUML : exporterDiagramme(GestionnaireClasses)
+ExportateurSourcePlantUML -> GestionnaireClasses : getClasses()
+GestionnaireClasses --> ExportateurSourcePlantUML : List<Classe>
+ExportateurSourcePlantUML -> ExportateurSourcePlantUML : exporterClasse(classe)
+ExportateurSourcePlantUML -> Classe : getNom()
+Classe --> ExportateurSourcePlantUML : String
+ExportateurSourcePlantUML -> Classe : getAttributs(classe)
+Classe --> ExportateurSourcePlantUML : List<Attribut>
+ExportateurSourcePlantUML -> Attribut : getAcces()
+Attribut --> ExportateurSourcePlantUML : int
+ExportateurSourcePlantUML -> ExportateurSourcePlantUML : getSymbole(int)
+ExportateurSourcePlantUML -> Attribut : getNom()
+Attribut --> ExportateurSourcePlantUML : String
+ExportateurSourcePlantUML -> Attribut : getType()
+Attribut --> ExportateurSourcePlantUML : Class
+ExportateurSourcePlantUML -> Classe : getMethode()
+Classe --> ExportateurSourcePlantUML : List<Methode>
+ExportateurSourcePlantUML -> Methode : getAcces()
+Methode --> ExportateurSourcePlantUML : int
+ExportateurSourcePlantUML -> ExportateurSourcePlantUML : getSymbole(int)
+ExportateurSourcePlantUML -> Methode : getNom()
+Methode --> ExportateurSourcePlantUML : String
+
+@enduml
