@@ -1,4 +1,4 @@
-package SAE;
+/*package SAE;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -11,6 +11,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
@@ -105,4 +106,4 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-}
+}*/
