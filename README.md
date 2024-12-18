@@ -1,7 +1,7 @@
 # SAE 3.01 - Groupe 4
-Mattéo Cadet  
+Mattéo Cadet - NeekoRobin974  
 Dieudonne Quentin  
-Marcelin Ray  
+Marcelin Ray - Nilecramm  
 Baptiste Hennequin  
 
 Trello :
