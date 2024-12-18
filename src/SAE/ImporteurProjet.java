@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 
 public class ImporteurProjet {
 
@@ -113,8 +114,22 @@ public class ImporteurProjet {
                     Association association = new Association(classe, classeAssociee, attribut.getName(), "1..1");
                     gestionnaire.ajouterAssociation(association);
                 }
+                //On vérifie si l'attribut est une collection
+                if (Collection.class.isAssignableFrom(typeAttribut)){
+                    // Obtenir le type générique
+                    Type genericType = attribut.getGenericType();
+                    if (genericType instanceof ParameterizedType){
+                        ParameterizedType parameterizedType = (ParameterizedType) genericType;
+                        Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                        if (typeArguments.length > 0 && typeArguments[0] instanceof Class<?>){
+                            Class<?> typeElement = (Class<?>) typeArguments[0];
+                            Classe classeAssociee = new Classe(typeElement.getName(), 0);
+                            gestionnaire.ajouterClasse(classeAssociee);
+                            gestionnaire.ajouterAssociation(new Association(classe, classeAssociee, attribut.getName(), "0..*"));
+                        }
+                    }
+                }
             }
-
         } catch (ClassNotFoundException e) {
             System.err.println("Classe non trouvée : " + e.getMessage());
         } catch (Exception e) {
