@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
+//importer par maven net.sourceforge.plantuml:plantuml:1.2024.4
 
 public class ExportateurImagePlantUML {
     public void exporterImage(GestionnaireClasses gestionnaire, String cheminSortie){
