@@ -24,6 +24,10 @@ public class Attribut {
         return this.type;
     }
 
+    public int getAcces() {
+        return this.acces;
+    }
+
     public void setNom(String nom) {
         this.nom = nom;
     }
