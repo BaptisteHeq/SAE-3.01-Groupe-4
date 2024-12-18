@@ -17,7 +17,7 @@ public class MainTestImage extends javafx.application.Application {
 
         ExportateurImagePlantUML exportateurImage = new ExportateurImagePlantUML();
 
-        exportateurImage.exporterImage(gestionnaire, "zizi.png");
+        exportateurImage.exporterImage(gestionnaire, "diagrammeTest.png");
     }
 }
 
