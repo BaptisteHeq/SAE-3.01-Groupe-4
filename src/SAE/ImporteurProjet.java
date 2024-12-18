@@ -72,11 +72,19 @@ public class ImporteurProjet {
                 Class<?> typeRetour = methode.getReturnType();
                 List<Attribut> parametres = new ArrayList<>();
 
+                // Récupération de l'accès de la méthode
+                int modificateursMethode = methode.getModifiers();
+                int accesMethode = 0; // Par défaut, on suppose "public"
+                if (Modifier.isPublic(modificateursMethode)) accesMethode = 0; // Public (reste 0)
+                else if (Modifier.isProtected(modificateursMethode)) accesMethode = 1; // Protected
+                else if (Modifier.isPrivate(modificateursMethode)) accesMethode = 2; // Private
+
+                // Ajout des paramètres de la méthode
                 for (Parameter param : methode.getParameters()) {
                     parametres.add(new Attribut(param.getName(), param.getType()));
                 }
 
-                Methode classMet = new Methode(methode.getModifiers(), methode.getName(), typeRetour, parametres);
+                Methode classMet = new Methode(accesMethode, methode.getName(), typeRetour, parametres);
                 classe.addMethode(classMet);
             }
 
