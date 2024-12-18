@@ -1,0 +1,51 @@
+package SAE;
+
+public class ExportateurSourceJava {
+    public String exporterSource(GestionnaireClasses gestionnaireClasses) {
+        StringBuilder sb = new StringBuilder();
+        for (Classe classe : gestionnaireClasses.getClasses()) {
+            exporterClasse(classe, sb);
+        }
+        return sb.toString();
+    }
+
+    private String getJavaAcces(int acces) {
+        switch (acces) {
+            case 0: return "public";
+            case 1: return "protected";
+            case 2: return "private";
+            default: return "zizi"; //Valeur par défaut
+        }
+    }
+
+    private void exporterClasse(Classe classe, StringBuilder sb) {
+        //En-tête de la classe
+        sb.append(getJavaAcces(classe.getAcces())).append(" class ").append(classe.getNom()).append(" {\n");
+
+        //Attributs de la classe
+        for (Attribut attribut : classe.getAttributs()) {
+            sb.append("\t").append(getJavaAcces(attribut.getAcces())).append(" ")
+                    .append(attribut.getType().getSimpleName()).append(" ")
+                    .append(attribut.getNom()).append(";\n");
+        }
+
+        //Méthodes de la classe
+        for (Methode methode : classe.getMethodes()) {
+            sb.append("\t").append(getJavaAcces(methode.getAcces())).append(" ")
+                    .append(methode.getTypeRetour().getSimpleName()).append(" ")
+                    .append(methode.getNom()).append("(");
+
+            //Paramètres de la méthode
+            for (int i = 0; i < methode.getParametres().size(); i++) {
+                Attribut parametre = methode.getParametres().get(i);
+                sb.append(parametre.getType().getSimpleName()).append(" ")
+                        .append(parametre.getNom());
+                if (i < methode.getParametres().size() - 1) {
+                    sb.append(", ");
+                }
+            }
+            sb.append(") {}\n");
+        }
+        sb.append("}\n\n");
+    }
+}
