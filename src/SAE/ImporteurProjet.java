@@ -36,6 +36,8 @@ public class ImporteurProjet {
         } else {
             System.out.println("Le chemin indiqué n'est pas un répertoire.");
         }
+
+        this.gestionnaire.nettoyerDoublons();
     }
 
     /**
@@ -62,7 +64,6 @@ public class ImporteurProjet {
             // Crée l'objet Classe
             Classe classe = new Classe(c.getName(), acces);
             gestionnaire.ajouterClasse(classe);
-
             // Gestion de l'héritage
             Class<?> superClasse = c.getSuperclass();
             if (superClasse != null && !superClasse.getName().equals("java.lang.Object")) {
