@@ -1,4 +1,4 @@
-/*package SAE;
+package SAE;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -7,12 +7,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends Application {
 
@@ -21,6 +18,7 @@ public class Main extends Application {
         BorderPane bp = new BorderPane();
         MenuBar menuBar = new MenuBar();
         Menu menuFichier = new Menu("Fichier");
+        Modele modele = new Modele();
 
         //MenuItem Importer
         MenuItem menuItemImporter = new MenuItem("Importer");
@@ -32,13 +30,19 @@ public class Main extends Application {
 
             if (selectedDirectory != null) {
                 //Appel à ImporteurProjet pour importer les fichiers
-                ImporteurProjet importeur = new ImporteurProjet();
-                List<Classe> classesImportees = importeur.importerProjet(selectedDirectory.getAbsolutePath());
+                GestionnaireClasses gestionnaire = new GestionnaireClasses();
+                ImporteurProjet importeur = new ImporteurProjet(gestionnaire);
+                importeur.importerProjet(selectedDirectory.getAbsolutePath());
+
+                modele.remplir(gestionnaire);
+                VuePane vuePane = new VuePane(modele);
+                modele.enregistrerObservateur(vuePane);
+                bp.setCenter(vuePane);
 
                 //Affiche les classes importées dans la console pour voir si ça marche
-                if (!classesImportees.isEmpty()) {
+                if (!gestionnaire.getClasses().isEmpty()) {
                     System.out.println("Classes importées : ");
-                    for (Classe classe : classesImportees) {
+                    for (Classe classe : gestionnaire.getClasses()) {
                         System.out.println(classe.getNom());
                     }
                 } else {
@@ -46,15 +50,6 @@ public class Main extends Application {
                 }
             } else {
                 System.out.println("Aucun répertoire sélectionné");
-            }
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Sélectionner un fichier Java");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers Java", "*.java"));
-            File selectedFile = fileChooser.showOpenDialog(stage);
-            if (selectedFile != null) {
-                System.out.println("Fichier sélectionné : " + selectedFile.getAbsolutePath());
-            } else {
-                System.out.println("Aucun fichier sélectionné");
             }
         });
 
@@ -96,7 +91,6 @@ public class Main extends Application {
 
         bp.setTop(menuBar);
 
-        //Création de la scène
         Scene scene = new Scene(bp, 800, 600);
         stage.setTitle("UML Peneragor");
         stage.setScene(scene);
@@ -106,4 +100,4 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-}*/
+}
