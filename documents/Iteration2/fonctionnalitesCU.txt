@@ -1,0 +1,13 @@
+exporter en squeletteJava, sourcePlantUML, imagePlantUML
+
+Etapes:
+
+
+Fonctionnalités:
+-Exporter le projet
+
+Scénarios :
+- Cliquer sur le bouton "Fichier" -> Cliquer sur le bouton "Exporter" :
+    Possibilité 1 : Exporter le projet en squelette Java
+    Possibilité 2 : Exporter le projet en source PlantUML
+    Possibilité 3 : Exporter le projet en image PlantUML
