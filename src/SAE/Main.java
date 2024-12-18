@@ -1,24 +1,17 @@
 package SAE;
 
 import javafx.application.Application;
-<<<<<<< Updated upstream
-import javafx.stage.DirectoryChooser;
-=======
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
->>>>>>> Stashed changes
 import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import java.io.File;
-import java.util.List;
 
 import java.io.File;
+import java.util.List;
 
 public class Main extends Application {
 
@@ -31,7 +24,6 @@ public class Main extends Application {
         //MenuItem Importer
         MenuItem menuItemImporter = new MenuItem("Importer");
         menuItemImporter.setOnAction(e -> {
-<<<<<<< Updated upstream
             //Ouvre la fenêtre de sélection de dossier (pour l'instant ça marche que en local)
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choisir un dossier de projet");
@@ -54,7 +46,6 @@ public class Main extends Application {
             } else {
                 System.out.println("Aucun répertoire sélectionné");
             }
-=======
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Sélectionner un fichier Java");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers Java", "*.java"));
@@ -81,7 +72,6 @@ public class Main extends Application {
         MenuItem menuItemExportUML = new MenuItem("UML");
         menuItemExportUML.setOnAction(e -> {
             System.out.println("UML sélectionné");
->>>>>>> Stashed changes
         });
 
         //Menu Help (à faire dans les dernières itérations)
