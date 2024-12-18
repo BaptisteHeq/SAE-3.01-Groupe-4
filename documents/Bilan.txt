@@ -1,0 +1,5 @@
+Durant la première itération, nous avons oublié pour l'importateur d'importer
+les liens (Héritages, Associations, Implémentations...) entre les classes.
+
+Au lieu de retourner un List<Classe>, nous devons retourner un GestionnaireClasses
+ce qui a beaucoup retardé notre itération 2 : exporter en squeletteJava, sourcePlantUML, imagePlantUML
