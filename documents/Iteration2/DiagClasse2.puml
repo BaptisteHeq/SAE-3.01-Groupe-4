@@ -2,7 +2,7 @@
 title Diagramme de classes de la 2ème itération
 
 package "Base" {
-    class Classe{
+    class Classe #ffcccc{
         - nom : String
         - acces : int
         + Classe(String nom, int acces)
@@ -15,7 +15,7 @@ package "Base" {
         + String getNom() : String
     }
 
-    class Methode{
+    class Methode #ffcccc{
         - acces : int
         - nom : String
         - typeRetour : Class
@@ -26,7 +26,7 @@ package "Base" {
         + getParametres() : List<Attribut>
     }
 
-    class Attribut{
+    class Attribut #ffcccc{
         - nom : String
         - acces : int
         - type : Class
@@ -40,7 +40,7 @@ package "Base" {
 }
 
 package "Gestion" {
-    class GestionnaireClasses{
+    class GestionnaireClasses #98FB98{
         + GestionnaireClasses()
         + ajouterClasse(Classe classe) : void
         + ajouterHeritage(Heritage heritage) : void
@@ -56,7 +56,7 @@ package "Gestion" {
 }
 
 package "Relations" {
-    class Association{
+    class Association #98FB98{
         - type : String
         - cardinalite : String
         + Association(Classe classe1, Classe classe2, String type, String cardinalite)
@@ -66,13 +66,13 @@ package "Relations" {
         + getCardinalite() : String
     }
 
-    class Heritage{
+    class Heritage #98FB98{
         + Heritage(Classe classeMere, Classe classeFille)
         + getClasseMere() : Classe
         + getClasseFille() : Classe
     }
 
-    class Implementation{
+    class Implementation #98FB98{
         + Implementation(Classe classeInterface, Classe classeImplementation)
         + getClasseInterface() : Classe
         + getClasseImplementation() : Classe
@@ -80,24 +80,24 @@ package "Relations" {
 }
 
 package "Import/Export" {
-    class ImporteurProjet{
+    class ImporteurProjet #ffcccc{
         + ImporteurProjet(GestionnaireClasses gestionnaire)
         + importerProjet(String chemin) : void
         + importerFichier(File fichier) : void
     }
 
-    class ExportateurImagePlantUML{
+    class ExportateurImagePlantUML #98FB98{
         + exporterImage(GestionnaireClasses gestionnaireClasses, String cheminSortie) : void
     }
 
-    class ExportateurSourceJava{
+    class ExportateurSourceJava #98FB98{
         + exporterSource(GestionnaireClasses gestionnaireClasses) : String
         - getJavaAcces(int acces) : String
         - exporterClasse(Classe classe, StringBuilder sb) : void
         + genererFichierTxt(String chemin, GestionnaireClasses gestionnaireClasses) : void
     }
 
-    class ExportateurSourcePlantUML{
+    class ExportateurSourcePlantUML #98FB98{
         + exporterDiagramme(GestionnaireClasses gestionnaire) : String
         - exporterClasse(Classe classe, StringBuilder sb) : void
         - getSymboleAcces(int acces) : String
@@ -105,7 +105,7 @@ package "Import/Export" {
 }
 
 package "Vue et Modèle" {
-    class Modele{
+    class Modele #98FB98{
         + Modele()
         + remplir(GestionnaireClasses gestionnaireClasses) : void
         + getGestionnaireClasses() : GestionnaireClasses
@@ -114,22 +114,22 @@ package "Vue et Modèle" {
         + notifierObservateurs() : void
     }
 
-    interface Observateur{
+    interface Observateur #98FB98{
         + actualiser(Sujet s) : void
     }
 
-    interface Sujet{
+    interface Sujet #98FB98{
         + enregistrerObservateur(Observateur o) : void
         + supprimerObservateur(Observateur o) : void
         + notifierObservateurs() : void
     }
 
-    class VueClasse{
+    class VueClasse #98FB98{
         + VueClasse(Modele modelClasse)
         + actualiser(Sujet s) : void
     }
 
-    class VuePane{
+    class VuePane #98FB98{
         - centerPane : Pane
         + VuePane(Modele modele)
         + actualiser(Sujet s) : void
