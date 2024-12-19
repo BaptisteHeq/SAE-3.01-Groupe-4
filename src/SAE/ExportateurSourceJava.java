@@ -1,5 +1,9 @@
 package SAE;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class ExportateurSourceJava {
     public String exporterSource(GestionnaireClasses gestionnaireClasses) {
         StringBuilder sb = new StringBuilder();
@@ -14,7 +18,7 @@ public class ExportateurSourceJava {
             case 0: return "public";
             case 1: return "protected";
             case 2: return "private";
-            default: return "zizi"; //Valeur par défaut
+            default: return "";
         }
     }
 
@@ -47,5 +51,14 @@ public class ExportateurSourceJava {
             sb.append(") {}\n");
         }
         sb.append("}\n\n");
+    }
+
+    public void genererFichierTxt(String chemin, GestionnaireClasses gestionnaireClasses) {
+        String contenu = exporterSource(gestionnaireClasses);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(chemin))) {
+            writer.write(contenu);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de l'écriture du fichier : " + e.getMessage());
+        }
     }
 }

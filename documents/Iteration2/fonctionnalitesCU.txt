@@ -1,10 +1,10 @@
-exporter en squeletteJava, sourcePlantUML, imagePlantUML
+Exporter en squeletteJava, sourcePlantUML, imagePlantUML
 
 Etapes:
-
+-Création des différentes classes Exportateur.
 
 Fonctionnalités:
--Exporter le projet
+-Exporter le projet sous différentes formes.
 
 Scénarios :
 - Cliquer sur le bouton "Fichier" -> Cliquer sur le bouton "Exporter" :

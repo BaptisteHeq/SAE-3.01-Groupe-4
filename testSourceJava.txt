@@ -1,0 +1,179 @@
+public class SAE.Association {
+	private Classe classe1;
+	private Classe classe2;
+	private String nom;
+	private String cardinalite;
+	public Classe getClasse2() {}
+	public Classe getClasse1() {}
+	public String getNom() {}
+	public String getCardinalite() {}
+}
+
+public class SAE.Classe {
+	private String nom;
+	private int acces;
+	private List methodes;
+	private List attributs;
+	public void addMethode(Methode arg0) {}
+	public String getNom() {}
+	public int getAcces() {}
+	public List getMethodes() {}
+	public List getAttributs() {}
+	public void removeMethode(Methode arg0) {}
+	public void addAttribut(Attribut arg0) {}
+	public void removeAttribut(Attribut arg0) {}
+}
+
+public class SAE.Attribut {
+	private String nom;
+	private int acces;
+	private Class type;
+	public Class getType() {}
+	public void setType(Class arg0) {}
+	public void setNom(String arg0) {}
+	public String getNom() {}
+	public int getAcces() {}
+}
+
+public class SAE.ExportateurImagePlantUML {
+	public void exporterImage(GestionnaireClasses arg0, String arg1) {}
+}
+
+public class SAE.ExportateurSourceJava {
+	public void genererFichierTxt(String arg0, GestionnaireClasses arg1) {}
+	public String exporterSource(GestionnaireClasses arg0) {}
+	private void exporterClasse(Classe arg0, StringBuilder arg1) {}
+	private String getJavaAcces(int arg0) {}
+}
+
+public class SAE.ExportateurSourcePlantUML {
+	public String exporterDiagramme(GestionnaireClasses arg0) {}
+	private void exporterClasse(Classe arg0, StringBuilder arg1) {}
+	private String getSymboleAcces(int arg0) {}
+}
+
+public class SAE.GestionnaireClasses {
+	private List classes;
+	private List heritages;
+	private List associations;
+	private List implementations;
+	public List getClasses() {}
+	public void ajouterImplementation(Implementation arg0) {}
+	public void nettoyerDoublons() {}
+	public List getImplementations() {}
+	public void ajouterHeritage(Heritage arg0) {}
+	public void ajouterAssociation(Association arg0) {}
+	public void ajouterClasse(Classe arg0) {}
+	public List getHeritages() {}
+	public boolean contientClasse(Classe arg0) {}
+	public List getAssociations() {}
+}
+
+public class SAE.Heritage {
+	private Classe classeMere;
+	private Classe classeFille;
+	public Classe getClasseMere() {}
+	public Classe getClasseFille() {}
+}
+
+public class SAE.Implementation {
+	private Classe classeInterface;
+	private Classe classeImplementation;
+	public Classe getClasseImplementation() {}
+	public Classe getClasseInterface() {}
+}
+
+public class SAE.ImporteurProjet {
+	private GestionnaireClasses gestionnaire;
+	public void importerProjet(String arg0) {}
+	public void importerFichier(File arg0) {}
+}
+
+public class SAE.Main {
+	public void main(String[] arg0) {}
+	public void start(Stage arg0) {}
+	private void lambda$start$3(ActionEvent arg0) {}
+	private void lambda$start$4(ActionEvent arg0) {}
+	private void lambda$start$2(ActionEvent arg0) {}
+	private void lambda$start$1(ActionEvent arg0) {}
+	private void lambda$start$0(Stage arg0, Modele arg1, BorderPane arg2, ActionEvent arg3) {}
+}
+
+public class javafx.application.Application {
+}
+
+public class SAE.MainTest {
+	public void main(String[] arg0) {}
+	public void start(Stage arg0) {}
+}
+
+public class SAE.MainTestImage {
+	public void main(String[] arg0) {}
+	public void start(Stage arg0) {}
+}
+
+public class SAE.Methode {
+	private int acces;
+	private String nom;
+	private Class typeRetour;
+	private List parametres;
+	public String getNom() {}
+	public int getAcces() {}
+	public List getParametres() {}
+	public Class getTypeRetour() {}
+}
+
+public class SAE.Modele {
+	public ArrayList observateurs;
+	public GestionnaireClasses gestionnaireClasses;
+	public void enregistrerObservateur(Observateur arg0) {}
+	public void remplir(GestionnaireClasses arg0) {}
+	public GestionnaireClasses getGestionnaireClasses() {}
+	public void notifierObservateurs() {}
+	public void supprimerObservateur(Observateur arg0) {}
+}
+
+public class SAE.Sujet {
+	public void enregistrerObservateur(Observateur arg0) {}
+	public void notifierObservateurs() {}
+	public void supprimerObservateur(Observateur arg0) {}
+}
+
+public class SAE.Observateur {
+	public void actualiser(Sujet arg0) {}
+}
+
+public class SAE.Test {
+}
+
+public class SAE.TestHeritage {
+}
+
+public class SAE.TestImplement {
+}
+
+public class SAE.TestJava {
+	public void main(String[] arg0) {}
+	public void start(Stage arg0) {}
+}
+
+public class SAE.VueClasse {
+	private Modele modelClasse;
+	public void actualiser(Sujet arg0) {}
+}
+
+public class javafx.scene.control.Label {
+}
+
+public class SAE.VuePane {
+	private Modele modele;
+	private Pane centerPane;
+	public void actualiser(Sujet arg0) {}
+}
+
+public class javafx.scene.layout.BorderPane {
+}
+
+public class javafx.scene.layout.Pane {
+}
+

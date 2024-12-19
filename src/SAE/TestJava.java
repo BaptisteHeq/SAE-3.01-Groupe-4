@@ -12,5 +12,10 @@ public class TestJava extends javafx.application.Application {
         importeurProjet.importerProjet("src/SAE");
         ExportateurSourceJava exportateurSourceJava = new ExportateurSourceJava();
         System.out.println(exportateurSourceJava.exporterSource(gestionnaireClasses));
+
+        //Génération un fichier .txt
+        String cheminFichier = "testSourceJava.txt";
+        exportateurSourceJava.genererFichierTxt(cheminFichier, gestionnaireClasses);
+        System.out.println("Fichier exporté à : " + cheminFichier);
     }
 }
