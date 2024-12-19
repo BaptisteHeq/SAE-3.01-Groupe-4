@@ -104,8 +104,12 @@ public class ImporteurProjet {
             // Récupère les champs (attributs) de la classe
             Field[] attributs = c.getDeclaredFields();
             for (Field attribut : attributs) {
+                int modifAttr = attribut.getModifiers();
+                int accesAttr = 0;
+                if (Modifier.isProtected(modifAttr)) accesAttr = 1;
+                else if (Modifier.isPrivate(modifAttr)) accesAttr = 2;
                 Class<?> typeAttribut = attribut.getType();
-                Attribut classAttr = new Attribut(attribut.getName(), typeAttribut);
+                Attribut classAttr = new Attribut(attribut.getName(), typeAttribut,accesAttr);
                 classe.addAttribut(classAttr);
 
                 // Gestion des associations
