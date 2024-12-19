@@ -47,4 +47,22 @@ public class Classe {
     public String getNom() {
         return this.nom;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Classe classe = (Classe) obj;
+        return nom != null && nom.equals(classe.nom); // Comparaison basée sur le nom
+    }
+
+    @Override
+    public int hashCode() {
+        return nom != null ? nom.hashCode() : 0; // HashCode basé sur le nom
+    }
+
 }

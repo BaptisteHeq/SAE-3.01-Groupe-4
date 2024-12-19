@@ -28,4 +28,27 @@ public class Association {
     public String getCardinalite() {
         return this.cardinalite;
     }
+
+    public String toString() {
+        return this.classe1.getNom() + " " + this.cardinalite + " " + this.nom + " " + this.classe2.getNom();
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Association association = (Association) obj;
+        return (classe1.equals(association.classe1) && classe2.equals(association.classe2)) ||
+                (classe1.equals(association.classe1) && classe2.equals(association.classe2));
+    }
+
+    @Override
+    public int hashCode() {
+        return classe1.hashCode() + classe2.hashCode();
+    }
+
 }
+

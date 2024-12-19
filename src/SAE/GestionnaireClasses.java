@@ -1,7 +1,6 @@
 package SAE;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GestionnaireClasses {
     private List<Classe> classes;
@@ -111,5 +110,81 @@ public class GestionnaireClasses {
                 }
             }
         }
+    }
+
+
+    public Map<Classe, List<Classe>> construireGrapheDependances() {
+        Map<Classe, List<Classe>> graphe = new HashMap<>();
+
+        for (Classe c : classes) {
+            graphe.put(c, new ArrayList<>());
+        }
+
+        for (Heritage heritage : heritages) {
+            graphe.get(heritage.getClasseFille()).add(heritage.getClasseMere());
+        }
+
+        for (Association association : associations) {
+            graphe.get(association.getClasse1()).add(association.getClasse2());
+        }
+
+        for (Implementation implementation : implementations) {
+            graphe.get(implementation.getClasseImplementation()).add(implementation.getClasseInterface());
+        }
+
+        return graphe;
+    }
+
+    public List<Classe> trierClassesParDependances() {
+        Map<Classe, List<Classe>> graphe = construireGrapheDependances();
+        List<Classe> ordre = new ArrayList<>();
+        Set<Classe> visite = new HashSet<>();
+        Set<Classe> enCours = new HashSet<>();
+
+        for (Classe c : graphe.keySet()) {
+            if (!visite.contains(c)) {
+                if (!triTopologiqueDFS(c, graphe, visite, enCours, ordre)) {
+                    throw new RuntimeException("Cycle détecté");
+                }
+            }
+        }
+
+        return ordre;
+    }
+
+    private boolean triTopologiqueDFS(Classe classe, Map<Classe, List<Classe>> graphe, Set<Classe> visite, Set<Classe> enCours, List<Classe> ordre) {
+        enCours.add(classe);
+
+        for (Classe voisin : graphe.get(classe)) {
+            if (enCours.contains(voisin)) {
+                return false; //cycle détecté
+            }
+            if (!visite.contains(voisin)) {
+                if (!triTopologiqueDFS(voisin, graphe, visite, enCours, ordre)) {
+                    return false;
+                }
+            }
+        }
+
+        enCours.remove(classe);
+        visite.add(classe);
+        ordre.add(0, classe);
+        return true;
+    }
+
+
+    public String getGrapheDependances() {
+        Map<Classe, List<Classe>> graphe = construireGrapheDependances();
+        StringBuilder sb = new StringBuilder();
+
+        for (Classe c : graphe.keySet()) {
+            sb.append(c.getNom()).append(" -> ");
+            for (Classe voisin : graphe.get(c)) {
+                sb.append(voisin.getNom()).append(", ");
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 }
