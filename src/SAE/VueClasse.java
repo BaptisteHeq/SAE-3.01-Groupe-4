@@ -1,8 +1,8 @@
 package SAE;
 
-import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
-public class VueClasse extends Label implements Observateur {
+public class VueClasse extends VBox implements Observateur {
 
     private Modele modelClasse;
 
@@ -12,5 +12,6 @@ public class VueClasse extends Label implements Observateur {
 
     @Override
     public void actualiser(Sujet s) {
+
     }
 }

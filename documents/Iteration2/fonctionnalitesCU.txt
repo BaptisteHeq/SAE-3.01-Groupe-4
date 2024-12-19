@@ -5,6 +5,7 @@ Etapes:
 
 Fonctionnalités:
 -Exporter le projet sous différentes formes.
+- affichage de la prévisualisation du diagramme de classes
 
 Scénarios :
 - Cliquer sur le bouton "Fichier" -> Cliquer sur le bouton "Exporter" :
