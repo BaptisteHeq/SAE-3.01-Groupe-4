@@ -1,5 +1,5 @@
 @startuml
-title Diagramme de classes de la 1ère itération
+title Diagramme de classes de la 2ème itération
 
 package "Base" {
     class Classe{

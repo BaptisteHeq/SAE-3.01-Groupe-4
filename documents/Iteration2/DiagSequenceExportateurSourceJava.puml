@@ -1,0 +1,78 @@
+@startuml
+title Diagramme de séquence de l'exportateur de code source Java
+
+participant Main
+participant ExportateurSourceJava
+participant GestionnaireClasses
+participant Classe
+participant Attribut
+participant Methode
+
+Main -> ExportateurSourceJava: exporterSource(GestionnaireClasses gestionnaireClasses)
+activate ExportateurSourceJava
+
+ExportateurSourceJava -> GestionnaireClasses: getClasses()
+activate GestionnaireClasses
+GestionnaireClasses --> ExportateurSourceJava: Liste<Classe>
+deactivate GestionnaireClasses
+
+loop Pour chaque Classe dans la liste
+    ExportateurSourceJava -> ExportateurSourceJava: exporterClasse(Classe classe, StringBuilder sb)
+    activate ExportateurSourceJava
+    deactivate ExportateurSourceJava
+
+    ExportateurSourceJava -> Classe: getNom()
+    activate Classe
+    Classe --> ExportateurSourceJava: String nom
+    deactivate Classe
+
+    ExportateurSourceJava -> Classe: getAcces()
+    activate Classe
+    Classe --> ExportateurSourceJava: int acces
+    deactivate Classe
+
+    ExportateurSourceJava -> ExportateurSourceJava: getJavaAcces(int)
+    activate ExportateurSourceJava
+    deactivate ExportateurSourceJava
+
+    ExportateurSourceJava -> Classe: getAttributs()
+    activate Classe
+    Classe --> ExportateurSourceJava: Liste<Attribut>
+    deactivate Classe
+
+    loop Pour chaque Attribut dans la liste
+        ExportateurSourceJava -> Attribut: getAcces()
+        activate Attribut
+        Attribut --> ExportateurSourceJava: int acces
+        deactivate Attribut
+
+        ExportateurSourceJava -> ExportateurSourceJava: getJavaAcces(int)
+        activate ExportateurSourceJava
+        deactivate ExportateurSourceJava
+
+        ExportateurSourceJava -> Attribut: getNom()
+        activate Attribut
+        Attribut --> ExportateurSourceJava: String
+        deactivate Attribut
+    end
+
+    ExportateurSourceJava -> Classe: getMethodes()
+    activate Classe
+    Classe --> ExportateurSourceJava: Liste<Methode>
+    deactivate Classe
+
+    loop Pour chaque Methode dans la liste
+        ExportateurSourceJava -> Methode: getAcces()
+        activate Methode
+        Methode --> ExportateurSourceJava: int acces
+        deactivate Methode
+
+        ExportateurSourceJava -> ExportateurSourceJava: getJavaAcces(int)
+        activate ExportateurSourceJava
+        deactivate ExportateurSourceJava
+    end
+end
+
+ExportateurSourceJava --> Main: String (code source généré)
+deactivate ExportateurSourceJava
+@enduml
