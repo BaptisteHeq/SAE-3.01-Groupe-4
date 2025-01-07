@@ -8,12 +8,26 @@ public class Classe {
     private int acces; // 0 = public, 1 = protected, 2 = private
     private List methodes;
     private List attributs;
+    private boolean visible;
 
     public Classe(String nom, int acces) {
         this.nom = nom;
         this.methodes = new ArrayList();
         this.attributs = new ArrayList();
         this.acces = acces;
+        this.visible = true;
+    }
+
+    public boolean isVisible() {
+        return this.visible;
+    }
+
+    public void setVisible() {
+        this.visible = visible;
+    }
+
+    public void setInvisible() {
+        this.visible = false;
     }
 
     public void addMethode(Methode methode) {
