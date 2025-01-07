@@ -23,7 +23,7 @@ public class Classe {
     }
 
     public void setVisible() {
-        this.visible = visible;
+        this.visible = true;
     }
 
     public void setInvisible() {

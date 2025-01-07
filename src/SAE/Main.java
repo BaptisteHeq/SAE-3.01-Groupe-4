@@ -77,17 +77,42 @@ public class Main extends Application {
             System.out.println("Ici on affichera la doc");
         });
 
+        //Menu Affichage
+        Menu menuAffichage = new Menu("Affichage");
+        Menu menuItemAffichageClasses = new Menu("Afficher/Masquer les classes");
+        menuItemAffichageClasses.setOnAction(e -> {
+            //Retire les doublons
+            menuItemAffichageClasses.getItems().clear();
+            //Affiche la liste de toutes les classes sours forme de boutons
+            for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
+                MenuItem menuClasse = new MenuItem(classe.getNom());
+                menuItemAffichageClasses.getItems().add(menuClasse);
+
+                //Affiche ou masque la classe en fonction de son état
+                menuClasse.setOnAction(event -> {
+                    if (classe.isVisible()) {
+                        classe.setInvisible();
+                    } else {
+                        classe.setVisible();
+                    }
+                    modele.notifierObservateurs();
+                });
+            }
+        });
+
         //Ajouter les menus
         menuFichier.getItems().add(menuItemImporter);
         menuFichier.getItems().add(menuItemVide);
         menuFichier.getItems().add(menuExporter);
         menuExporter.getItems().add(menuItemExportPNG);
         menuExporter.getItems().add(menuItemExportUML);
+        menuAffichage.getItems().add(menuItemAffichageClasses);
 
         menuHelp.getItems().add(menuItemAbout);
 
         menuBar.getMenus().add(menuFichier);
         menuBar.getMenus().add(menuHelp);
+        menuBar.getMenus().add(menuAffichage);
 
         bp.setTop(menuBar);
 
