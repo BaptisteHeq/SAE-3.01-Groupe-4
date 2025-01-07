@@ -112,6 +112,8 @@ public class VuePane extends BorderPane implements Observateur {
                 scrollPane.setPannable(false);
                 //position de base
                 double[] sourisPos = (double[]) vPrincipale.getUserData();
+                centerPane.getChildren().removeIf(node -> node instanceof Line);
+                ajouterLignesRelations(vBoxHashMap);
                 if (sourisPos != null) {
                     double deltaX = event.getSceneX() - sourisPos[0];
                     double deltaY = event.getSceneY() - sourisPos[1];
