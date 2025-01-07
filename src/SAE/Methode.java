@@ -22,7 +22,7 @@ public class Methode {
     }
 
     public void setVisible() {
-        this.visible = visible;
+        this.visible = true;
     }
 
     public void setInvisible() {

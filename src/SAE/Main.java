@@ -85,8 +85,20 @@ public class Main extends Application {
             menuItemAffichageClasses.getItems().clear();
             //Affiche la liste de toutes les classes sours forme de boutons
             for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
-                MenuItem menuClasse = new MenuItem(classe.getNom());
-                menuItemAffichageClasses.getItems().add(menuClasse);
+                Menu menuClasse = new Menu(classe.getNom());
+                for (Methode methode : classe.getMethodes()) {
+                    Menu menuMethode = new Menu(methode.getNom());
+                    menuMethode.setOnAction(event -> {
+                        if(methode.isVisible()){
+                            methode.setInvisible();
+                            modele.notifierObservateurs();
+                        } else {
+                            methode.setVisible();
+                            modele.notifierObservateurs();
+                        }
+                    });
+                    menuClasse.getItems().add(menuMethode);
+                }
 
                 //Affiche ou masque la classe en fonction de son état
                 menuClasse.setOnAction(event -> {
@@ -97,6 +109,7 @@ public class Main extends Application {
                     }
                     modele.notifierObservateurs();
                 });
+                menuItemAffichageClasses.getItems().add(menuClasse);
             }
         });
 
