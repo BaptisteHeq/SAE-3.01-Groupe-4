@@ -1,0 +1,7 @@
+Exporter en squeletteJava, sourcePlantUML, imagePlantUML
+
+Fonctionnalités:
+- Déplacer les classes
+
+Scénarios :
+- Cliquer sur la classe à déplacer puis la bouger avec la souris
