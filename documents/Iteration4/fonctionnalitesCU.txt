@@ -1,0 +1,10 @@
+Fonctionnalités:
+- Afficher/Masquer les classes
+- Afficher/Masquer les méthodes
+
+Scénarios :
+- Cliquer sur le bouton "Affichage" -> Cliquer sur le bouton "Afficher/Masquer les classes" :
+- La liste des classes s'affiche
+- Cliquer sur l'un des boutons classe de la liste affichée
+    Possibilité 1 : La classe est déjà afficher, donc si on clique sur le bouton, elle se masque
+    Possibilité 2 : La classe est masquer, donc si on clique sur le bouton, elle s'affiche
