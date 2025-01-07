@@ -102,23 +102,22 @@ public class VuePane extends BorderPane implements Observateur {
             maxX = Math.max(maxX, x + 100);
             maxY = Math.max(maxY, y + 100);
 
-            // Ajout des événements de glisser-déposer
+            //glisser deplacer
             vPrincipale.setOnMousePressed(event -> {
-                // Sauvegarder la position initiale de la souris
+                //position de la souris
                 vPrincipale.setUserData(new double[]{event.getSceneX(), event.getSceneY()});
             });
 
             vPrincipale.setOnMouseDragged(event -> {
                 scrollPane.setPannable(false);
-                // Récupérer la position initiale
-                double[] initialMousePos = (double[]) vPrincipale.getUserData();
-                if (initialMousePos != null) {
-                    double deltaX = event.getSceneX() - initialMousePos[0];
-                    double deltaY = event.getSceneY() - initialMousePos[1];
-                    // Déplacer la classe
+                //position de base
+                double[] sourisPos = (double[]) vPrincipale.getUserData();
+                if (sourisPos != null) {
+                    double deltaX = event.getSceneX() - sourisPos[0];
+                    double deltaY = event.getSceneY() - sourisPos[1];
+                    //Déplacer la classe
                     vPrincipale.setLayoutX(vPrincipale.getLayoutX() + deltaX);
                     vPrincipale.setLayoutY(vPrincipale.getLayoutY() + deltaY);
-                    // Mettre à jour la position initiale pour la prochaine itération
                     vPrincipale.setUserData(new double[]{event.getSceneX(), event.getSceneY()});
                 }
             });
