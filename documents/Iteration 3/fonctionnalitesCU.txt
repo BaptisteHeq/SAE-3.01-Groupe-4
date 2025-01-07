@@ -1,5 +1,3 @@
-Exporter en squeletteJava, sourcePlantUML, imagePlantUML
-
 Fonctionnalités:
 - Déplacer les classes
 
