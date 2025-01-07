@@ -83,51 +83,53 @@ public class VuePane extends BorderPane implements Observateur {
         int index = 0;
 
         for (Classe c : classesTriees) {
-            VBox vPrincipale = creerBoiteClasse(c);
+            if(c.isVisible()) {
+                VBox vPrincipale = creerBoiteClasse(c);
 
-            double angle = Math.toRadians(index * angleStep);
-            double x = centerX + Math.cos(angle) * radius;
-            double y = centerY + Math.sin(angle) * radius;
+                double angle = Math.toRadians(index * angleStep);
+                double x = centerX + Math.cos(angle) * radius;
+                double y = centerY + Math.sin(angle) * radius;
 
-            //augmenter le rayon quand c'est complet
-            if (index % Math.max(6, classesTriees.size() / 3.5) == 0) {
-                radius += radiusStep;
-                angleStep = (360.0 / (classesTriees.size() - index))*1.5; //recalibrer l'angle
-            }
-
-            vPrincipale.setLayoutX(x);
-            vPrincipale.setLayoutY(y);
-
-            // Suivre les limites maximales
-            maxX = Math.max(maxX, x + 100);
-            maxY = Math.max(maxY, y + 100);
-
-            //glisser deplacer
-            vPrincipale.setOnMousePressed(event -> {
-                //position de la souris
-                vPrincipale.setUserData(new double[]{event.getSceneX(), event.getSceneY()});
-            });
-
-            vPrincipale.setOnMouseDragged(event -> {
-                scrollPane.setPannable(false);
-                //position de base
-                double[] sourisPos = (double[]) vPrincipale.getUserData();
-                centerPane.getChildren().removeIf(node -> node instanceof Line);
-                ajouterLignesRelations(vBoxHashMap);
-                if (sourisPos != null) {
-                    double deltaX = event.getSceneX() - sourisPos[0];
-                    double deltaY = event.getSceneY() - sourisPos[1];
-                    //Déplacer la classe
-                    vPrincipale.setLayoutX(vPrincipale.getLayoutX() + deltaX);
-                    vPrincipale.setLayoutY(vPrincipale.getLayoutY() + deltaY);
-                    vPrincipale.setUserData(new double[]{event.getSceneX(), event.getSceneY()});
+                //augmenter le rayon quand c'est complet
+                if (index % Math.max(6, classesTriees.size() / 3.5) == 0) {
+                    radius += radiusStep;
+                    angleStep = (360.0 / (classesTriees.size() - index)) * 1.5; //recalibrer l'angle
                 }
-            });
 
-            vBoxHashMap.put(c, vPrincipale);
-            centerPane.getChildren().add(vPrincipale);
+                vPrincipale.setLayoutX(x);
+                vPrincipale.setLayoutY(y);
 
-            index++;
+                // Suivre les limites maximales
+                maxX = Math.max(maxX, x + 100);
+                maxY = Math.max(maxY, y + 100);
+
+                //glisser deplacer
+                vPrincipale.setOnMousePressed(event -> {
+                    //position de la souris
+                    vPrincipale.setUserData(new double[]{event.getSceneX(), event.getSceneY()});
+                });
+
+                vPrincipale.setOnMouseDragged(event -> {
+                    scrollPane.setPannable(false);
+                    //position de base
+                    double[] sourisPos = (double[]) vPrincipale.getUserData();
+                    centerPane.getChildren().removeIf(node -> node instanceof Line);
+                    ajouterLignesRelations(vBoxHashMap);
+                    if (sourisPos != null) {
+                        double deltaX = event.getSceneX() - sourisPos[0];
+                        double deltaY = event.getSceneY() - sourisPos[1];
+                        //Déplacer la classe
+                        vPrincipale.setLayoutX(vPrincipale.getLayoutX() + deltaX);
+                        vPrincipale.setLayoutY(vPrincipale.getLayoutY() + deltaY);
+                        vPrincipale.setUserData(new double[]{event.getSceneX(), event.getSceneY()});
+                    }
+                });
+
+                vBoxHashMap.put(c, vPrincipale);
+                centerPane.getChildren().add(vPrincipale);
+
+                index++;
+            }
         }
 
         //3 : lignes pour les relations
@@ -183,8 +185,10 @@ public class VuePane extends BorderPane implements Observateur {
         Label l4 = new Label("Méthodes");
         vMethodes.getChildren().add(l4);
         for (Methode m : c.getMethodes()) {
-            Label l = new Label(m.getNom());
-            vMethodes.getChildren().add(l);
+            if(m.isVisible()) {
+                Label l = new Label(m.getNom());
+                vMethodes.getChildren().add(l);
+            }
         }
 
         vMethodes.setBorder(new Border(new BorderStroke(
