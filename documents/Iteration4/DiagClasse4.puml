@@ -1,10 +1,11 @@
 @startuml
-title Diagramme de classes de la 3ème itération
+title Diagramme de classes de la 4ème itération
 
 package "Base" {
     class Classe #98FB98{
         - nom : String
         - acces : int
+        - visible : boolean
         + Classe(String nom, int acces)
         + addMethode(Methode methode) : void
         + addAttribut(Attribut attribut) : void
@@ -15,17 +16,24 @@ package "Base" {
         + getNom() : String
         + equals(Object obj) : boolean
         + hashCode() : int
+        + isVisible() : boolean
+        + setVisible() : void
+        + setInvisible() : void
     }
 
-    class Methode #ffcccc{
+    class Methode #98FB98{
         - acces : int
         - nom : String
         - typeRetour : Class
+        - visible : boolean
         + Methode(int acces, String nom, Class typeRetour, List<Attribut> parametres)
         + getAcces() : int
         + getNom() : String
         + getTypeRetour() : Class
         + getParametres() : List<Attribut>
+        + isVisible() : boolean
+        + setVisible() : void
+        + setInvisible() : void
     }
 
     class Attribut #ffcccc{
@@ -42,7 +50,7 @@ package "Base" {
 }
 
 package "Gestion" {
-    class GestionnaireClasses #98FB98{
+    class GestionnaireClasses #ffcccc{
         + GestionnaireClasses()
         + ajouterClasse(Classe classe) : void
         + ajouterHeritage(Heritage heritage) : void
@@ -62,7 +70,7 @@ package "Gestion" {
 }
 
 package "Relations" {
-    class Association #98FB98{
+    class Association #ffcccc{
         - type : String
         - cardinalite : String
         + Association(Classe classe1, Classe classe2, String type, String cardinalite)
@@ -75,7 +83,7 @@ package "Relations" {
         + hashCode() : int
     }
 
-    class Heritage #98FB98{
+    class Heritage #ffcccc{
         + Heritage(Classe classeMere, Classe classeFille)
         + getClasseMere() : Classe
         + getClasseFille() : Classe
@@ -84,7 +92,7 @@ package "Relations" {
         + hashCode() : int
     }
 
-    class Implementation #98FB98{
+    class Implementation #ffcccc{
         + Implementation(Classe classeInterface, Classe classeImplementation)
         + getClasseInterface() : Classe
         + getClasseImplementation() : Classe
@@ -139,7 +147,7 @@ package "Vue et Modèle" {
         + notifierObservateurs() : void
     }
 
-    class VueClasse #98FB98{
+    class VueClasse #ffcccc{
         + VueClasse(Modele modelClasse)
         + actualiser(Sujet s) : void
     }
