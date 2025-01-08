@@ -53,6 +53,17 @@ public class GestionnaireClasses {
         return this.classes;
     }
 
+   //utile pour ajouter des heritages et des implementations
+    public Classe getClasseByNom(String nom){
+        for (Classe c : this.classes){
+            if (c.getNom().equals(nom)){
+                return c;
+            }
+        }
+        return null;
+    }
+
+
     public List<Heritage> getHeritages() {
         return this.heritages;
     }

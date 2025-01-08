@@ -1,6 +1,7 @@
 package SAE;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -8,6 +9,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.scene.layout.*;
+import javafx.scene.control.*;
 
 import java.io.File;
 
@@ -112,6 +115,134 @@ public class Main extends Application {
                 menuItemAffichageClasses.getItems().add(menuClasse);
             }
         });
+        Menu menuAjout = new Menu("Ajouter Liens");
+        MenuItem menuHeritage = new MenuItem("Ajouter un Héritage");
+        MenuItem menuImplementation = new MenuItem("Ajouter une Implémentation");
+
+        menuHeritage.setOnAction(event -> {
+            Stage dialog = new Stage();
+            dialog.setTitle("Ajouter un Héritage");
+
+            VBox layout = new VBox(10);
+            layout.setPadding(new Insets(20));
+
+            Label labelInstructions = new Label("Sélectionnez une classe mère et une classe fille :");
+
+            //ComboBox pour le choix de la classe mere
+            ComboBox<String> comboClasseMere = new ComboBox<>();
+            for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
+                comboClasseMere.getItems().add(classe.getNom());
+                comboClasseMere.setPromptText("Classe Mère");
+            }
+
+            // ComboBox pour le choix de la classe fille
+            ComboBox<String> comboClasseFille = new ComboBox<>();
+            for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
+                comboClasseFille.getItems().add(classe.getNom());
+                }
+            comboClasseFille.setPromptText("Classe Fille");
+
+            //Bouton pour valider
+            Button btnValider = new Button("valider");
+            btnValider.setOnAction(e -> {
+                if(comboClasseFille.getValue()!=null && comboClasseMere.getValue()!=null){
+                        Classe classeMere = modele.gestionnaireClasses.getClasseByNom(comboClasseMere.getValue());
+                        Classe classeFille = modele.gestionnaireClasses.getClasseByNom(comboClasseFille.getValue());
+                        if(classeMere!=classeFille){
+                            Heritage heritage = new Heritage(classeMere,classeFille);
+                            modele.gestionnaireClasses.ajouterHeritage(heritage);
+                            modele.notifierObservateurs();
+                        }
+                        else{
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Information");
+                            alert.setHeaderText("Erreur dans la création de l'héritage");
+                            alert.setContentText("Vous avez sélectionné deux fois la même classe");
+                            alert.show();
+                        }
+                }
+                else{
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText("Erreur dans la création de l'héritage");
+                    alert.setContentText("Une des deux classes n'a pas été spécifiée");
+                    alert.show();
+                }
+
+                dialog.close();
+            });
+
+            //On ajoute les boutons au layout et on affiche la scene
+            layout.getChildren().addAll(labelInstructions, comboClasseMere, comboClasseFille, btnValider);
+            Scene dialogScene = new Scene(layout, 300, 200);
+            dialog.setScene(dialogScene);
+            dialog.showAndWait();
+        });
+
+        menuImplementation.setOnAction(event -> {
+            Stage dialog = new Stage();
+            dialog.setTitle("Ajouter une Implémentation");
+
+            VBox layout = new VBox(10);
+            layout.setPadding(new Insets(20));
+
+            Label labelInstructions = new Label("Sélectionnez une classe interface et une classe implementation :");
+
+            //ComboBox pour le choix de la classe mere
+            ComboBox<String> comboClasseInterface = new ComboBox<>();
+            for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
+                try {
+                    Class<?> c = Class.forName(classe.getNom());
+                    if(c.isInterface()){
+                        comboClasseInterface.getItems().add(classe.getNom());
+                    }
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            comboClasseInterface.setPromptText("Classe Interface");
+
+            // ComboBox pour le choix de la classe fille
+            ComboBox<String> comboClasseImplementation = new ComboBox<>();
+            for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
+                try {
+                    Class<?> c = Class.forName(classe.getNom());
+                    if(!c.isInterface()){
+                        comboClasseImplementation.getItems().add(classe.getNom());
+                    }
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            comboClasseImplementation.setPromptText("Classe Implementation");
+
+            //Bouton pour valider
+            Button btnValider = new Button("valider");
+            btnValider.setOnAction(e -> {
+                if(comboClasseImplementation.getValue()!=null && comboClasseInterface.getValue()!=null){
+                    Classe classeInterface = modele.gestionnaireClasses.getClasseByNom(comboClasseInterface.getValue());
+                    Classe classeImplementation = modele.gestionnaireClasses.getClasseByNom(comboClasseImplementation.getValue());
+                    Implementation implementation = new Implementation(classeInterface, classeImplementation);
+                    modele.gestionnaireClasses.ajouterImplementation(implementation);
+                    modele.notifierObservateurs();
+                }
+                else{
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText("Erreur dans la création de l'implémentation");
+                    alert.setContentText("Une des deux classes n'a pas été spécifiée");
+                    alert.show();
+                }
+                dialog.close();
+            });
+
+            //On ajoute les boutons au layout et on affiche la scene
+            layout.getChildren().addAll(labelInstructions, comboClasseInterface, comboClasseImplementation, btnValider);
+            Scene dialogScene = new Scene(layout, 300, 200);
+            dialog.setScene(dialogScene);
+            dialog.showAndWait();
+        });
+
 
         //Ajouter les menus
         menuFichier.getItems().add(menuItemImporter);
@@ -120,12 +251,15 @@ public class Main extends Application {
         menuExporter.getItems().add(menuItemExportPNG);
         menuExporter.getItems().add(menuItemExportUML);
         menuAffichage.getItems().add(menuItemAffichageClasses);
+        menuAjout.getItems().add(menuHeritage);
+        menuAjout.getItems().add(menuImplementation);
 
         menuHelp.getItems().add(menuItemAbout);
 
         menuBar.getMenus().add(menuFichier);
         menuBar.getMenus().add(menuHelp);
         menuBar.getMenus().add(menuAffichage);
+        menuBar.getMenus().add(menuAjout);
 
         bp.setTop(menuBar);
 
