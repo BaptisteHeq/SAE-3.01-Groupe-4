@@ -1,6 +1,8 @@
 package SAE;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
@@ -18,12 +20,14 @@ public class VuePane extends BorderPane implements Observateur {
     private double scaleFactor = 1.0;
     private Scale scale;
     private Pane centerPane = new Pane();
+    private Group lignesGroup = new Group(); // Groupe pour les lignes
+    private Group classesGroup = new Group(); // Groupe pour les classes
     ScrollPane scrollPane = new ScrollPane(centerPane);
 
     public VuePane(Modele modele) {
         this.modele = modele;
 
-        //Pane pour le diagramme et le ScrollPane
+        centerPane.getChildren().addAll(lignesGroup, classesGroup);
 
 
         // Configurer le ScrollPane
@@ -56,7 +60,8 @@ public class VuePane extends BorderPane implements Observateur {
     @Override
     public void actualiser(Sujet s) {
         List<Classe> classesTriees = modele.getGestionnaireClasses().trierClassesParDependances();
-        centerPane.getChildren().clear();
+        lignesGroup.getChildren().clear();
+        classesGroup.getChildren().clear();
 
         //1: calculer l'importance des classes
         Map<Classe, Integer> importance = calculerImportance(classesTriees);
@@ -123,10 +128,12 @@ public class VuePane extends BorderPane implements Observateur {
                         vPrincipale.setLayoutY(vPrincipale.getLayoutY() + deltaY);
                         vPrincipale.setUserData(new double[]{event.getSceneX(), event.getSceneY()});
                     }
+                    lignesGroup.getChildren().clear();
+                    ajouterLignesRelations(vBoxHashMap);
                 });
 
                 vBoxHashMap.put(c, vPrincipale);
-                centerPane.getChildren().add(vPrincipale);
+                classesGroup.getChildren().add(vPrincipale);
 
                 index++;
             }
@@ -168,6 +175,7 @@ public class VuePane extends BorderPane implements Observateur {
         VBox vPrincipale = new VBox();
         vPrincipale.setMinWidth(100);
         vPrincipale.setMaxWidth(120);
+        vPrincipale.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         VBox vAttributs = new VBox();
         VBox vMethodes = new VBox();
@@ -212,6 +220,7 @@ public class VuePane extends BorderPane implements Observateur {
                 BorderWidths.DEFAULT
         )));
         vPrincipale.setAlignment(Pos.TOP_CENTER);
+        vPrincipale.toFront();
 
         return vPrincipale;
     }
@@ -250,8 +259,9 @@ public class VuePane extends BorderPane implements Observateur {
             ligne.setStroke(javafx.scene.paint.Color.ORANGE);
             ligne.getStrokeDashArray().addAll(2.0, 8.0);
         }
+        ligne.toBack();
 
-        centerPane.getChildren().add(ligne);
+        lignesGroup.getChildren().add(ligne);
     }
 
 }
