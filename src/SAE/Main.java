@@ -2,14 +2,20 @@ package SAE;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
+import java.awt.*;
 import java.io.File;
 
 public class Main extends Application {
@@ -142,13 +148,49 @@ public class Main extends Application {
         MenuItem menuItemAjouterClasse = new MenuItem("Classe");
         Menu menuItemAjouterMethode = new Menu("Méthode");
         menuItemAjouterClasse.setOnAction(e -> {
-            // Créer une boîte de dialogue pour demander le nom de la classe
-            TextInputDialog dialog = new TextInputDialog();
+            // Créer une boîte de dialogue pour demander le nom de la classe et sa visibilité
+            Dialog<Pair<String, String>> dialog = new Dialog<>();
             dialog.setTitle("Ajouter une Classe");
             dialog.setHeaderText("Ajouter une nouvelle classe");
-            dialog.setContentText("Entrez le nom de la classe:");
-            dialog.showAndWait().ifPresent(nomClasse -> {
-                Classe nouvelleClasse = new Classe(nomClasse, 1);
+
+            // Définir les boutons OK et Annuler
+            ButtonType boutonOk = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(boutonOk, ButtonType.CANCEL);
+
+            // Créer les champs de saisie pour le nom et la visibilité
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            //grid.setPadding(new Insets(20, 150, 10, 10));
+
+            TextField nomClasse = new TextField();
+            nomClasse.setPromptText("Nom de la classe");
+
+            ComboBox<String> comboVisibilite = new ComboBox<>();
+            comboVisibilite.getItems().addAll("Public", "Privé");
+            comboVisibilite.setValue("Public");
+
+            grid.add(new Label("Nom de la classe:"), 0, 0);
+            grid.add(nomClasse, 1, 0);
+            grid.add(new Label("Visibilité:"), 0, 1);
+            grid.add(comboVisibilite, 1, 1);
+
+            dialog.getDialogPane().setContent(grid);
+
+            // Récupérer le résultat du dialogue
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == boutonOk) {
+                    return new Pair<>(nomClasse.getText(), comboVisibilite.getValue());
+                }
+                return null;
+            });
+
+            // Traiter le résultat du dialogue
+            dialog.showAndWait().ifPresent(result -> {
+                String nom = result.getKey();
+                String visibilite = result.getValue();
+                int visibiliteCode = visibilite.equals("Public") ? 1 : 0;
+                Classe nouvelleClasse = new Classe(nom, visibiliteCode);
                 modele.getGestionnaireClasses().ajouterClasse(nouvelleClasse);
                 modele.notifierObservateurs();
             });
