@@ -2,9 +2,21 @@ Fonctionnalités:
 - Afficher/Masquer les classes
 - Afficher/Masquer les méthodes
 
-Scénarios :
+Etapes:
+- Créations des boutons pour les fonctionnalité
+- Codage des fonctionnalités
+
+Scénarios pour les classes:
 - Cliquer sur le bouton "Affichage" -> Cliquer sur le bouton "Afficher/Masquer les classes" :
 - La liste des classes s'affiche
 - Cliquer sur l'un des boutons classe de la liste affichée
-    Possibilité 1 : La classe est déjà afficher, donc si on clique sur le bouton, elle se masque
-    Possibilité 2 : La classe est masquer, donc si on clique sur le bouton, elle s'affiche
+    Possibilité 1 : La classe est déjà affichée, donc si on clique sur le bouton, elle se masque
+    Possibilité 2 : La classe est masquée, donc si on clique sur le bouton, elle s'affiche
+
+Scénarios pour les méthodes:
+- Cliquer sur le bouton "Affichage" -> Cliquer sur le bouton "Afficher/Masquer les classes" :
+- La liste des classes s'affiche
+- Si on passe la souris sur une classe, la liste des méthodes s'affiche
+- Cliquer sur l'un des boutons méthode de la liste affichée
+    Possibilité 1 : La méthode est déjà affichée, donc si on clique sur le bouton, elle se masque
+    Possibilité 2 : La méthode est masquée, donc si on clique sur le bouton, elle s'affiche

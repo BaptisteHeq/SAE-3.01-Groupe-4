@@ -2,6 +2,8 @@ package SAE;
 
 import java.io.File;
 import java.lang.reflect.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
@@ -18,42 +20,28 @@ public class ImporteurProjet {
      * Importe toutes les classes Java d'un dossier donné
      * @param chemin Le chemin du dossier à analyser
      */
-    public void importerProjet(String chemin) {
+    public void importerProjet(String chemin) throws Exception {
         File dossier = new File(chemin);
 
-        if (dossier.isDirectory()) {
-            File[] fichiers = dossier.listFiles();
-
-            if (fichiers != null) {
-                for (File fichier : fichiers) {
-                    if (fichier.isFile() && fichier.getName().endsWith(".java")) { // Vérifie si c'est un fichier Java
-                        importerFichier(fichier);
-                    }
-                }
-            } else {
-                System.out.println("Il n'y a aucun fichier à importer dans votre répertoire.");
-            }
-        } else {
-            System.out.println("Le chemin indiqué n'est pas un répertoire.");
+        if (!dossier.exists() || !dossier.isDirectory()) {
+            throw new IllegalArgumentException("Le chemin spécifié n'existe pas ou n'est pas un dossier !");
         }
+
+        URLClassLoader classLoader = new URLClassLoader(new URL[]{dossier.toURI().toURL()});
+
+        // Parcourir récursivement le dossier pour trouver les fichiers .class
+        parcourirEtChargerClasses(dossier, classLoader, "");
 
         this.gestionnaire.nettoyerDoublons();
     }
 
     /**
      * Importe une seule classe Java à partir d'un fichier
-     * @param fichier Le fichier de la classe
+     * @param c Le fichier de la classe
      */
-    public void importerFichier(File fichier) {
+    public void importerFichier(Class<?> c) {
         try {
-            // On convertit le chemin du fichier en nom de classe
-            String cheminClasse = fichier.getAbsolutePath()
-                    .replace(File.separator, ".")
-                    .replace(".java", "")
-                    .replaceFirst("^.*src\\.", ""); // Suppose que le chemin commence par src/ pour obtenir le bon nom de package
 
-            // Charge la classe à partir de son nom complet
-            Class<?> c = Class.forName(cheminClasse);
 
             // Récupère les modificateurs de la classe (public, protected, etc.)
             int modificateurs = c.getModifiers();
@@ -135,10 +123,35 @@ public class ImporteurProjet {
                     }
                 }
             }
-        } catch (ClassNotFoundException e) {
-            System.err.println("Classe non trouvée : " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Erreur lors de l'importation du fichier : " + e.getMessage());
+        }
+    }
+
+    private void parcourirEtChargerClasses(File dossier, URLClassLoader classLoader, String packageCourant) throws Exception {
+        for (File fichier : dossier.listFiles()) {
+            if (fichier.isDirectory()) {
+                // Récursivement traiter les sous-dossiers
+                String nouveauPackage = packageCourant.isEmpty() ? fichier.getName() : packageCourant + "." + fichier.getName();
+                parcourirEtChargerClasses(fichier, classLoader, nouveauPackage);
+            } else if (fichier.getName().endsWith(".class") && !fichier.getName().contains("module-info")) {
+                try {
+                    // Charger une classe
+                    System.out.println("Chargement de la classe : " + fichier.getName());
+                    String nomClasse;
+                    if (packageCourant.isEmpty()){
+                        nomClasse = fichier.getName().replace(".class", "");
+                    } else {
+                        nomClasse = packageCourant + "." + fichier.getName().replace(".class", "");
+                    }
+                    Class<?> c = classLoader.loadClass(nomClasse);
+                    importerFichier(c);
+                    System.out.println("Classe chargée : " + c.getName());
+                } catch (NoClassDefFoundError | ClassNotFoundException e) {
+                    // Afficher un message d'erreur pour la classe non chargée
+                    System.err.println("Impossible de charger la classe : " + fichier.getName() + " (" + e.getMessage() + ")");
+                }
+            }
         }
     }
 }
