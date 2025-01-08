@@ -73,11 +73,19 @@ public class Main extends Application {
 
         MenuItem menuItemExportPNG = new MenuItem("PNG");
         menuItemExportPNG.setOnAction(e -> {
+            if(modele.getGestionnaireClasses() == null){
+                montrerErreur("Aucun projet");
+                return;
+            }
             System.out.println("PNG sélectionné");
         });
 
         MenuItem menuItemExportUML = new MenuItem("UML");
         menuItemExportUML.setOnAction(e -> {
+            if(modele.getGestionnaireClasses() == null){
+                montrerErreur("Aucun projet");
+                return;
+            }
             System.out.println("UML sélectionné");
         });
 
@@ -92,6 +100,10 @@ public class Main extends Application {
         Menu menuAffichage = new Menu("Affichage");
         Menu menuItemAffichageClasses = new Menu("Afficher/Masquer les classes");
         menuItemAffichageClasses.setOnAction(e -> {
+            if(modele.getGestionnaireClasses() == null){
+                montrerErreur("Aucun projet");
+                return;
+            }
             //Retire les doublons
             menuItemAffichageClasses.getItems().clear();
 
@@ -108,7 +120,6 @@ public class Main extends Application {
                 //Affiche la liste des méthodes de la classe sous forme de boutons
                 for (Methode methode : classe.getMethodes()) {
                     Menu menuMethode = new Menu(methode.getNom());
-
                     //Couleur en fonction de la visibilité
                     if (methode.isVisible()) {
                         menuMethode.setStyle("-fx-background-color: #98FB98");
@@ -148,6 +159,10 @@ public class Main extends Application {
         MenuItem menuItemAjouterClasse = new MenuItem("Classe");
         Menu menuItemAjouterMethode = new Menu("Méthode");
         menuItemAjouterClasse.setOnAction(e -> {
+            if(modele.getGestionnaireClasses() == null){
+                montrerErreur("Aucun projet");
+                return;
+            }
             // Créer une boîte de dialogue pour demander le nom de la classe et sa visibilité
             Dialog<Pair<String, String>> dialog = new Dialog<>();
             dialog.setTitle("Ajouter une Classe");
@@ -196,6 +211,10 @@ public class Main extends Application {
             });
         });
         menuItemAjouterMethode.setOnAction(e -> {
+            if(modele.getGestionnaireClasses() == null){
+                montrerErreur("Aucun projet");
+                return;
+            }
             //Retire les doublons
             menuItemAjouterMethode.getItems().clear();
             //Affiche la liste de toutes les classes sous forme de boutons
@@ -235,6 +254,15 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    public void montrerErreur(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     public static void main(String[] args) {
         launch(args);
     }}
