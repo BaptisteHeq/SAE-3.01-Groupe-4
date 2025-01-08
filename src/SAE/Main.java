@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -83,7 +84,7 @@ public class Main extends Application {
         menuItemAffichageClasses.setOnAction(e -> {
             //Retire les doublons
             menuItemAffichageClasses.getItems().clear();
-            //Affiche la liste de toutes les classes sours forme de boutons
+            //Affiche la liste de toutes les classes sous forme de boutons
             for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
                 Menu menuClasse = new Menu(classe.getNom());
                 for (Methode methode : classe.getMethodes()) {
@@ -113,6 +114,48 @@ public class Main extends Application {
             }
         });
 
+        //faire un bouton pour ajouter des classes
+        Menu menuAjouter = new Menu("Ajouter");
+        MenuItem menuItemAjouterClasse = new MenuItem("Classe");
+        Menu menuItemAjouterMethode = new Menu("Méthode");
+        menuItemAjouterClasse.setOnAction(e -> {
+            // Créer une boîte de dialogue pour demander le nom de la classe
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Ajouter une Classe");
+            dialog.setHeaderText("Ajouter une nouvelle classe");
+            dialog.setContentText("Entrez le nom de la classe:");
+
+            dialog.showAndWait().ifPresent(nomClasse -> {
+                Classe nouvelleClasse = new Classe(nomClasse, 1);
+                modele.getGestionnaireClasses().ajouterClasse(nouvelleClasse);
+                modele.notifierObservateurs();
+            });
+        });
+
+        menuItemAjouterMethode.setOnAction(e -> {
+            //Retire les doublons
+            menuItemAjouterMethode.getItems().clear();
+            //Affiche la liste de toutes les classes sous forme de boutons
+            for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
+                MenuItem c = new MenuItem(classe.getNom());
+                c.setOnAction(event -> {
+                            // Créer une boîte de dialogue pour demander le nom de la methode
+                            TextInputDialog dialog = new TextInputDialog();
+                            dialog.setTitle("Ajouter une Methode");
+                            dialog.setHeaderText("Ajouter une nouvelle methode");
+                            dialog.setContentText("Entrez le nom de la methode:");
+
+                            dialog.showAndWait().ifPresent(nomMethode -> {
+                                Methode nouvelleMethode = new Methode(1, nomMethode, new Classe("void", 0).getClass(), null);
+                                classe.addMethode(nouvelleMethode);
+                                modele.notifierObservateurs();
+                            });
+                        });
+                menuItemAjouterMethode.getItems().add(c);
+            }
+        });
+
+
         //Ajouter les menus
         menuFichier.getItems().add(menuItemImporter);
         menuFichier.getItems().add(menuItemVide);
@@ -120,12 +163,14 @@ public class Main extends Application {
         menuExporter.getItems().add(menuItemExportPNG);
         menuExporter.getItems().add(menuItemExportUML);
         menuAffichage.getItems().add(menuItemAffichageClasses);
+        menuAjouter.getItems().addAll(menuItemAjouterClasse, menuItemAjouterMethode);
 
         menuHelp.getItems().add(menuItemAbout);
 
         menuBar.getMenus().add(menuFichier);
         menuBar.getMenus().add(menuHelp);
         menuBar.getMenus().add(menuAffichage);
+        menuBar.getMenus().add(menuAjouter);
 
         bp.setTop(menuBar);
 
