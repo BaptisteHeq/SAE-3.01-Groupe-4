@@ -3,19 +3,12 @@ package SAE;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.awt.*;
 import java.io.File;
 
 public class Main extends Application {
@@ -39,7 +32,11 @@ public class Main extends Application {
                 //Appel à ImporteurProjet pour importer les fichiers
                 GestionnaireClasses gestionnaire = new GestionnaireClasses();
                 ImporteurProjet importeur = new ImporteurProjet(gestionnaire);
-                importeur.importerProjet(selectedDirectory.getAbsolutePath());
+                try {
+                    importeur.importerProjet(selectedDirectory.getAbsolutePath());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
 
                 modele.remplir(gestionnaire);
                 VuePane vuePane = new VuePane(modele);
