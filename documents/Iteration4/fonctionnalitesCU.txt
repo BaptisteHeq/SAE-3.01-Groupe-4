@@ -2,6 +2,10 @@ Fonctionnalités:
 - Afficher/Masquer les classes
 - Afficher/Masquer les méthodes
 
+Etapes:
+- Créations des boutons pour les fonctionnalité
+- Codage des fonctionnalités
+
 Scénarios pour les classes:
 - Cliquer sur le bouton "Affichage" -> Cliquer sur le bouton "Afficher/Masquer les classes" :
 - La liste des classes s'affiche

@@ -1,0 +1,201 @@
+@startuml
+title Diagramme de classes de la 5ème itération
+
+package "Base" {
+    class Classe #98FB98{
+        - nom : String
+        - acces : int
+        - visible : boolean
+        + Classe(String nom, int acces)
+        + addMethode(Methode methode) : void
+        + addAttribut(Attribut attribut) : void
+        + removeAttribut(Attribut attribut) : void
+        + getAttributs() : List<Attribut>
+        + removeMethode(Methode methode) : void
+        + getMethodes() : List<Methode>
+        + getNom() : String
+        + equals(Object obj) : boolean
+        + hashCode() : int
+        + isVisible() : boolean
+        + setVisible() : void
+        + setInvisible() : void
+    }
+
+    class Methode #98FB98{
+        - acces : int
+        - nom : String
+        - typeRetour : Class
+        - visible : boolean
+        + Methode(int acces, String nom, Class typeRetour, List<Attribut> parametres)
+        + getAcces() : int
+        + getNom() : String
+        + getTypeRetour() : Class
+        + getParametres() : List<Attribut>
+        + isVisible() : boolean
+        + setVisible() : void
+        + setInvisible() : void
+    }
+
+    class Attribut #ffcccc{
+        - nom : String
+        - acces : int
+        - type : Class
+        + Attribut(String nom, Class type)
+        + Attribut(String nom, Class type, int acces)
+        + getNom() : String
+        + getType() : Class
+        + setNom(String nom) : void
+        + setType(Class type) : void
+    }
+}
+
+package "Gestion" {
+    class GestionnaireClasses #ffcccc{
+        + GestionnaireClasses()
+        + ajouterClasse(Classe classe) : void
+        + ajouterHeritage(Heritage heritage) : void
+        + ajouterAssociation(Association association) : void
+        + ajouterImplementation(Implementation implementation) : void
+        + getClasses() : List<Classe>
+        + getHeritages() : List<Heritage>
+        + getAssociations() : List<Association>
+        + getImplementations() : List<Implementation>
+        + contientClasse(Classe classe) : boolean
+        + nettoyerDoublons() : void
+        + construireGrapheDependances() : Map<Classe, List<Classe>>
+        + trierClassesParDependances() : List<Classe>
+        - triTopologiqueDFS(Classe classe, Map<Classe, List<Classe>> graphe, Set<Classe> visite, Set<Classe> enCours, List<Classe> ordre) : void
+        + getGrapheDependances() : String
+    }
+}
+
+package "Relations" {
+    class Association #ffcccc{
+        - type : String
+        - cardinalite : String
+        + Association(Classe classe1, Classe classe2, String type, String cardinalite)
+        + getClasse1() : Classe
+        + getClasse2() : Classe
+        + getType() : String
+        + getCardinalite() : String
+        + toString() : String
+        + equals(Object obj) : boolean
+        + hashCode() : int
+    }
+
+    class Heritage #ffcccc{
+        + Heritage(Classe classeMere, Classe classeFille)
+        + getClasseMere() : Classe
+        + getClasseFille() : Classe
+        + getNom() : String
+        + equals(Object obj) : boolean
+        + hashCode() : int
+    }
+
+    class Implementation #ffcccc{
+        + Implementation(Classe classeInterface, Classe classeImplementation)
+        + getClasseInterface() : Classe
+        + getClasseImplementation() : Classe
+        + getNom() : String
+        + equals(Object obj) : boolean
+        + hashCode() : int
+    }
+}
+
+package "Import/Export" {
+    class ImporteurProjet #ffcccc{
+        + ImporteurProjet(GestionnaireClasses gestionnaire)
+        + importerProjet(String chemin) : void
+        + importerFichier(File fichier) : void
+    }
+
+    class ExportateurImagePlantUML #ffcccc{
+        + exporterImage(GestionnaireClasses gestionnaireClasses, String cheminSortie) : void
+    }
+
+    class ExportateurSourceJava #ffcccc{
+        + exporterSource(GestionnaireClasses gestionnaireClasses) : String
+        - getJavaAcces(int acces) : String
+        - exporterClasse(Classe classe, StringBuilder sb) : void
+        + genererFichierTxt(String chemin, GestionnaireClasses gestionnaireClasses) : void
+    }
+
+    class ExportateurSourcePlantUML #ffcccc{
+        + exporterDiagramme(GestionnaireClasses gestionnaire) : String
+        - exporterClasse(Classe classe, StringBuilder sb) : void
+        - getSymboleAcces(int acces) : String
+    }
+}
+
+package "Vue et Modèle" {
+    class Modele #ffcccc{
+        + Modele()
+        + remplir(GestionnaireClasses gestionnaireClasses) : void
+        + getGestionnaireClasses() : GestionnaireClasses
+        + enregistrerObservateur(Observateur o) : void
+        + supprimerObservateur(Observateur o) : void
+        + notifierObservateurs() : void
+    }
+
+    interface Observateur #ffcccc{
+        + actualiser(Sujet s) : void
+    }
+
+    interface Sujet #ffcccc{
+        + enregistrerObservateur(Observateur o) : void
+        + supprimerObservateur(Observateur o) : void
+        + notifierObservateurs() : void
+    }
+
+    class VueClasse #ffcccc{
+        + VueClasse(Modele modelClasse)
+        + actualiser(Sujet s) : void
+    }
+
+    class VuePane #98FB98{
+        - centerPane : Pane
+        - scaleFactor : double
+        - scale : Scale
+        - scrollPane : ScrollPane
+        + VuePane(Modele modele)
+        - handleZoom(ScrollEvent event) : void
+        + actualiser(Sujet s) : void
+        - calculerImportance(List<Classe> classesTriees) : Map<Classe, Integer>
+        - creerBoiteClasse(Classe c) : VBox
+        - ajouterLignesRelations(Map<Classe, VBox> classeVBoxMap) : void
+        - ajouterLigneRelation(VBox source, VBox cible, String typeRelation) : void
+    }
+}
+
+Classe "1" --> "0..*" Methode : - méthodes : List<Methode>
+Classe "1" --> "0..*" Attribut : - attributs : List<Attribut>
+
+Methode "1" --> "0..*" Attribut : - paramètres : List<Attribut>
+
+Association "1" --> "1" Classe : - classe1 : Classe
+Association "1" --> "1" Classe : - classe2 : Classe
+
+GestionnaireClasses "1" --> "0..*" Classe : - classes : List<Classe>
+GestionnaireClasses "1" --> "0..*" Heritage : - heritage : List<Heritage>
+GestionnaireClasses "1" --> "0..*" Association : - associations : List<Association>
+GestionnaireClasses "1" --> "0..*" Implementation : - implementations : List<Implementation>
+
+Heritage "1" --> "1" Classe : - classeMere : Classe
+Heritage "1" --> "1" Classe : - classeFille : Classe
+
+Implementation "1" --> "1" Classe : - classeInterface : Classe
+Implementation "1" --> "1" Classe : - classeImplementation : Classe
+
+ImporteurProjet "1" --> "1" GestionnaireClasses : - gestionnaire : GestionnaireClasses
+
+Modele "1" --> "0..*" Observateur : - observateurs : ArrayList<Observateur>
+Modele "1" --> "1" GestionnaireClasses : - gestionnaireClasses : GestionnaireClasses
+Modele ..|> Sujet
+
+VueClasse "1" --> "1" Modele : - modelClasse : Modele
+VueClasse ..|> Observateur
+
+VuePane "1" --> "1" Modele : - modele : Modele
+VuePane ..|> Observateur
+
+@enduml
