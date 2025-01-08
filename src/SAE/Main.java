@@ -83,38 +83,19 @@ public class Main extends Application {
         menuItemAffichageClasses.setOnAction(e -> {
             //Retire les doublons
             menuItemAffichageClasses.getItems().clear();
-
             //Affiche la liste de toutes les classes sours forme de boutons
             for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
                 Menu menuClasse = new Menu(classe.getNom());
-
-                //Couleur en fonction de la visibilité
-                if (classe.isVisible()) {
-                    menuClasse.setStyle("-fx-background-color: #98FB98");
-                } else {
-                    menuClasse.setStyle("-fx-background-color: #ffcccc");
-                }
-
-                //Affiche la liste des méthodes de la classe sous forme de boutons
                 for (Methode methode : classe.getMethodes()) {
                     Menu menuMethode = new Menu(methode.getNom());
-
-                    //Couleur en fonction de la visibilité
-                    if (methode.isVisible()) {
-                        menuMethode.setStyle("-fx-background-color: #98FB98");
-                    } else {
-                        menuMethode.setStyle("-fx-background-color: #ffcccc");
-                    }
-
                     menuMethode.setOnAction(event -> {
                         if(methode.isVisible()){
                             methode.setInvisible();
-                            menuMethode.setStyle("-fx-background-color: #ffcccc");
+                            modele.notifierObservateurs();
                         } else {
                             methode.setVisible();
-                            menuMethode.setStyle("-fx-background-color: #98FB98");
+                            modele.notifierObservateurs();
                         }
-                        modele.notifierObservateurs();
                     });
                     menuClasse.getItems().add(menuMethode);
                 }
@@ -123,10 +104,8 @@ public class Main extends Application {
                 menuClasse.setOnAction(event -> {
                     if (classe.isVisible()) {
                         classe.setInvisible();
-                        menuClasse.setStyle("-fx-background-color: #ffcccc");
                     } else {
                         classe.setVisible();
-                        menuClasse.setStyle("-fx-background-color: #98FB98");
                     }
                     modele.notifierObservateurs();
                 });
