@@ -8,6 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Scale;
 
 import java.util.HashMap;
@@ -141,6 +142,8 @@ public class VuePane extends BorderPane implements Observateur {
 
         //3 : lignes pour les relations
         ajouterLignesRelations(vBoxHashMap);
+        //Pour mettre les flèches en 1er plan
+        lignesGroup.toFront();
 
         //4 : ScrollPane
         centerPane.setMinWidth(maxX + 200);
@@ -238,30 +241,80 @@ public class VuePane extends BorderPane implements Observateur {
         }
     }
 
-    //ajouter une liigne entre deux boîtes
+    //Ajouter une ligne entre deux boîtes
     private void ajouterLigneRelation(VBox source, VBox cible, String typeRelation) {
         if (source == null || cible == null) return;
 
+        //Créer une ligne
         Line ligne = new Line();
         ligne.setStartX(source.getLayoutX() + source.getWidth() / 2);
         ligne.setStartY(source.getLayoutY() + source.getHeight() / 2);
         ligne.setEndX(cible.getLayoutX() + cible.getWidth() / 2);
         ligne.setEndY(cible.getLayoutY() + cible.getHeight() / 2);
 
+        //Style de la ligne
         ligne.setStyle("-fx-stroke-width: 2;");
-
         if (typeRelation.equals("Heritage")) {
             ligne.setStroke(javafx.scene.paint.Color.BLUE);
         } else if (typeRelation.equals("Association")) {
             ligne.setStroke(javafx.scene.paint.Color.GREEN);
-            ligne.getStrokeDashArray().addAll(5.0, 5.0);
         } else if (typeRelation.equals("Implementation")) {
             ligne.setStroke(javafx.scene.paint.Color.ORANGE);
-            ligne.getStrokeDashArray().addAll(2.0, 8.0);
+            ligne.getStrokeDashArray().addAll(5.0, 5.0); //Trait pointillé
         }
-        ligne.toBack();
 
+        ligne.toBack(); //S'assurer que la ligne est derrière les flèches
+
+        //Ajouter la ligne
         lignesGroup.getChildren().add(ligne);
+
+        //Ajouter la pointe de la flèche au trait
+        ajouterPointeDeFleche(ligne, typeRelation, lignesGroup);
     }
 
+    //Ajoute une pointe aux traits de relation en fonction du type de relation
+    private void ajouterPointeDeFleche(Line ligne, String typeRelation, Group groupe) {
+        //Calculer la direction de la ligne
+        double startX = ligne.getStartX();
+        double startY = ligne.getStartY();
+        double endX = ligne.getEndX();
+        double endY = ligne.getEndY();
+        double angle = Math.atan2(endY - startY, endX - startX);
+
+        //Longueur des côtés de la pointe de flèche
+        double arrowLength = 15;
+        double arrowWidth = 7;
+
+        //Calculer les points du triangle
+        double x1 = endX - arrowLength * Math.cos(angle - Math.PI / 6);
+        double y1 = endY - arrowLength * Math.sin(angle - Math.PI / 6);
+        double x2 = endX - arrowLength * Math.cos(angle + Math.PI / 6);
+        double y2 = endY - arrowLength * Math.sin(angle + Math.PI / 6);
+
+        //Pointes en fonction du type de relation
+        if (typeRelation.equals("Association")) {
+            //Flèche en ">" (sans base)
+            Line side1 = new Line(endX, endY, x1, y1);
+            Line side2 = new Line(endX, endY, x2, y2);
+            side1.setStroke(ligne.getStroke());
+            side1.setStrokeWidth(2);
+            side2.setStroke(ligne.getStroke());
+            side2.setStrokeWidth(2);
+
+            //Ajouter la pointe
+            groupe.getChildren().addAll(side1, side2);
+        } else {
+            //Pointe vide avec une base pour héritage et implémentation
+            Polygon fleche = new Polygon();
+            fleche.getPoints().addAll(endX, endY, x1, y1, x2, y2);
+            if (typeRelation.equals("Heritage") || typeRelation.equals("Implementation")) {
+                fleche.setFill(javafx.scene.paint.Color.TRANSPARENT); //Pointe vide
+                fleche.setStroke(ligne.getStroke()); //Contour uniquement
+                fleche.setStrokeWidth(2);
+            }
+
+            //Ajouter la pointe
+            groupe.getChildren().add(fleche);
+        }
+    }
 }
