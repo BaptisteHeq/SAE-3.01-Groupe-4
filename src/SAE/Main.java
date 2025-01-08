@@ -56,7 +56,11 @@ public class Main extends Application {
 
         MenuItem menuItemVide = new MenuItem("Nouveau");
         menuItemVide.setOnAction(e -> {
-            System.out.println("Nouveau sélectionné");
+            GestionnaireClasses gestionnaire = new GestionnaireClasses();
+            modele.remplir(gestionnaire);
+            VuePane vuePane = new VuePane(modele);
+            modele.enregistrerObservateur(vuePane);
+            bp.setCenter(vuePane);
         });
 
         Menu menuExporter = new Menu("Exporter");
