@@ -9,13 +9,23 @@ public class Classe {
     private List methodes;
     private List attributs;
     private boolean visible;
+    private boolean isInterface;
 
+    public Classe(String nom, int acces, boolean isInterface) {
+        this.nom = nom;
+        this.methodes = new ArrayList();
+        this.attributs = new ArrayList();
+        this.acces = acces;
+        this.visible = true;
+        this.isInterface = isInterface;
+    }
     public Classe(String nom, int acces) {
         this.nom = nom;
         this.methodes = new ArrayList();
         this.attributs = new ArrayList();
         this.acces = acces;
         this.visible = true;
+        this.isInterface = false;
     }
 
     public boolean isVisible() {
@@ -36,6 +46,9 @@ public class Classe {
 
     public int getAcces() {
         return this.acces;
+    }
+    public boolean getIsInterface() {
+        return this.isInterface;
     }
 
     public void addAttribut(Attribut attribut) {
