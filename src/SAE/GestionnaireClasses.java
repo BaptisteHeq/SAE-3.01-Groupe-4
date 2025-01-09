@@ -183,19 +183,4 @@ public class GestionnaireClasses {
         return true;
     }
 
-
-    public String getGrapheDependances() {
-        Map<Classe, List<Classe>> graphe = construireGrapheDependances();
-        StringBuilder sb = new StringBuilder();
-
-        for (Classe c : graphe.keySet()) {
-            sb.append(c.getNom()).append(" -> ");
-            for (Classe voisin : graphe.get(c)) {
-                sb.append(voisin.getNom()).append(", ");
-            }
-            sb.append("\n");
-        }
-
-        return sb.toString();
-    }
 }

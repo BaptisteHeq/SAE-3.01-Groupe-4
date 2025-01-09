@@ -1,15 +1,17 @@
 package SAE;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Scale;
+import javafx.util.Duration;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,18 +25,12 @@ public class VuePane extends BorderPane implements Observateur {
     private Pane centerPane = new Pane();
     private Group lignesGroup = new Group(); // Groupe pour les lignes
     private Group classesGroup = new Group(); // Groupe pour les classes
-    ScrollPane scrollPane = new ScrollPane(centerPane);
 
     public VuePane(Modele modele) {
         this.modele = modele;
 
         centerPane.getChildren().addAll(lignesGroup, classesGroup);
 
-
-        // Configurer le ScrollPane
-        scrollPane.setPannable(true); //clic-glissé pour naviguer
-        scrollPane.setFitToWidth(true); //dépasser en largeur
-        scrollPane.setFitToHeight(true); //dépasser en hauteur
 
         //molette zoom/dezoom
         centerPane.setOnScroll(this::handleZoom);
@@ -43,7 +39,7 @@ public class VuePane extends BorderPane implements Observateur {
         scale = new Scale(scaleFactor, scaleFactor);
         centerPane.getTransforms().add(scale);
 
-        this.setCenter(scrollPane);
+        this.setCenter(centerPane);
     }
 
     private void handleZoom(ScrollEvent event) {
@@ -60,7 +56,7 @@ public class VuePane extends BorderPane implements Observateur {
     }
     @Override
     public void actualiser(Sujet s) {
-        List<Classe> classesTriees = modele.getGestionnaireClasses().trierClassesParDependances();
+        List<Classe> classesTriees = modele.getGestionnaireClasses().getClasses();
         lignesGroup.getChildren().clear();
         classesGroup.getChildren().clear();
 
@@ -73,10 +69,7 @@ public class VuePane extends BorderPane implements Observateur {
         //2: le centre de mon positionnement
         double centerX = 500;
         double centerY = 400;
-        //ajouter un point rouge au centre
-        javafx.scene.shape.Circle circle = new javafx.scene.shape.Circle(centerX, centerY, 5);
-        circle.setFill(javafx.scene.paint.Color.RED);
-        centerPane.getChildren().add(circle);
+
         double radiusStep = 150; //espace entre les cercles de classes
         double angleStep = 360.0 / classesTriees.size();
         double radius = 150; //rayon du premier cercle
@@ -116,7 +109,6 @@ public class VuePane extends BorderPane implements Observateur {
                 });
 
                 vPrincipale.setOnMouseDragged(event -> {
-                    scrollPane.setPannable(false);
                     //position de base
                     double[] sourisPos = (double[]) vPrincipale.getUserData();
                     centerPane.getChildren().removeIf(node -> node instanceof Line);
@@ -144,6 +136,9 @@ public class VuePane extends BorderPane implements Observateur {
         ajouterLignesRelations(vBoxHashMap);
         //Pour mettre les flèches en 1er plan
         lignesGroup.toFront();
+
+        simulationRessort(vBoxHashMap); // Par exemple, 500 itérations
+        ajouterLignesRelations(vBoxHashMap);
 
         //4 : ScrollPane
         centerPane.setMinWidth(maxX + 200);
@@ -317,4 +312,140 @@ public class VuePane extends BorderPane implements Observateur {
             groupe.getChildren().add(fleche);
         }
     }
+    //ressoooort
+
+    private void simulationRessort(Map<Classe, VBox> vBoxHashMap) {
+        double longueurRessort = 200; //longueur du ressort
+        double k = 0.1; //constante du ressort
+        double forceDeRepulsion = 1000; //répulsion
+        double amortissement = 0.9;
+        double frottement = 1; //frottement
+
+        //stocker les vitesses pour chaque classe
+        Map<Classe, double[]> vitesses = new HashMap<>();
+        for (Classe c : vBoxHashMap.keySet()) {
+            vitesses.put(c, new double[]{0, 0});
+        }
+
+        //l'animation
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE); // Répète indéfiniment
+
+
+        KeyFrame frame = new KeyFrame(Duration.millis(16), event -> { //images par seconde
+            //calcul des forces sur chaque classe
+            Map<Classe, double[]> forces = new HashMap<>();
+            for (Classe c : vBoxHashMap.keySet()) {
+                forces.put(c, new double[]{0, 0});
+            }
+
+            //Forces des ressorts selon les relations
+            for (Heritage h : modele.getGestionnaireClasses().getHeritages()) {
+                appliquerForce(h.getClasseMere(), h.getClasseFille(), vBoxHashMap, forces, longueurRessort, k);
+            }
+            for (Association a : modele.getGestionnaireClasses().getAssociations()) {
+                appliquerForce(a.getClasse1(), a.getClasse2(), vBoxHashMap, forces, longueurRessort, k);
+            }
+            for (Implementation i : modele.getGestionnaireClasses().getImplementations()) {
+                appliquerForce(i.getClasseInterface(), i.getClasseImplementation(), vBoxHashMap, forces, longueurRessort, k);
+            }
+
+            //Forces de répulsion pour éviter les superpositions
+            for (Classe c1 : vBoxHashMap.keySet()) {
+                for (Classe c2 : vBoxHashMap.keySet()) {
+                    if (c1 != c2) {
+                        appliquerRepulsion(c1, c2, vBoxHashMap, forces, forceDeRepulsion);
+                    }
+                }
+            }
+
+            //tentative d'ajouter le frottement
+            for (Classe c : vBoxHashMap.keySet()) {
+                double[] vitesse = vitesses.get(c);
+                double[] force = forces.get(c);
+
+                //frottement opposé à la vitesse
+                force[0] -= frottement * vitesse[0];
+                force[1] -= frottement * vitesse[1];
+            }
+
+            //postion des classes
+            boolean stable = true; //stable si toutes les vitesses sont faibles
+            for (Classe c : vBoxHashMap.keySet()) {
+                VBox vbox = vBoxHashMap.get(c);
+                double[] vitesse = vitesses.get(c);
+                double[] force = forces.get(c);
+
+                //actualiser la vitesse
+                vitesse[0] = (vitesse[0] + force[0]) * amortissement;
+                vitesse[1] = (vitesse[1] + force[1]) * amortissement;
+
+                //voir si ça bouge encore
+                if (Math.abs(vitesse[0]) > 0.1 || Math.abs(vitesse[1]) > 0.1) {
+                    stable = false;
+                }
+
+                vbox.setLayoutX(vbox.getLayoutX() + vitesse[0]);
+                vbox.setLayoutY(vbox.getLayoutY() + vitesse[1]);
+            }
+
+            //relations
+            lignesGroup.getChildren().clear();
+            ajouterLignesRelations(vBoxHashMap);
+
+            //arrêter l'animation si stable
+            if (stable) {
+                timeline.stop();
+            }
+        });
+
+        timeline.getKeyFrames().add(frame);
+        timeline.play();
+    }
+
+
+
+    private void appliquerForce(Classe c1, Classe c2, Map<Classe, VBox> vBoxHashMap, Map<Classe, double[]> forces, double l, double k) {
+        VBox v1 = vBoxHashMap.get(c1);
+        VBox v2 = vBoxHashMap.get(c2);
+
+        //distance entre les classes
+        double dx = v2.getLayoutX() - v1.getLayoutX();
+        double dy = v2.getLayoutY() - v1.getLayoutY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance == 0) return;
+
+        //F = -k * (x - L)
+        double forceMagnitude = k * (distance - l);
+        double fx = forceMagnitude * dx / distance;
+        double fy = forceMagnitude * dy / distance;
+
+        forces.get(c1)[0] += fx;
+        forces.get(c1)[1] += fy;
+        forces.get(c2)[0] -= fx;
+        forces.get(c2)[1] -= fy;
+    }
+
+    private void appliquerRepulsion(Classe c1, Classe c2, Map<Classe, VBox> vBoxHashMap, Map<Classe, double[]> forces,
+                                    double forceDeRepulsion) {
+        VBox v1 = vBoxHashMap.get(c1);
+        VBox v2 = vBoxHashMap.get(c2);
+
+        //distance entre les classes
+        double dx = v2.getLayoutX() - v1.getLayoutX();
+        double dy = v2.getLayoutY() - v1.getLayoutY();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance == 0) return;
+
+        //F = k / r^2
+        double forceMagnitude = forceDeRepulsion / (distance * distance);
+        double fx = forceMagnitude * dx / distance;
+        double fy = forceMagnitude * dy / distance;
+
+        forces.get(c1)[0] -= fx;
+        forces.get(c1)[1] -= fy;
+        forces.get(c2)[0] += fx;
+        forces.get(c2)[1] += fy;
+    }
+
 }
