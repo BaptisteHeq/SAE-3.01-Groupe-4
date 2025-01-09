@@ -1,5 +1,5 @@
 @startuml
-title Diagramme de classes de la 5ème itération
+title Diagramme de classes de la 6ème itération
 
 package "Base" {
     class Classe #ffcccc{
@@ -104,7 +104,7 @@ package "Relations" {
 }
 
 package "Import/Export" {
-    class ImporteurProjet #98FB98{
+    class ImporteurProjet #ffcccc{
         + ImporteurProjet(GestionnaireClasses gestionnaire)
         + importerProjet(String chemin) : void
         + importerFichier(Class<?> c) : void
@@ -115,11 +115,12 @@ package "Import/Export" {
         + exporterImage(GestionnaireClasses gestionnaireClasses, String cheminSortie) : void
     }
 
-    class ExportateurSourceJava #ffcccc{
+    class ExportateurSourceJava #98FB98{
         + exporterSource(GestionnaireClasses gestionnaireClasses) : String
         - getJavaAcces(int acces) : String
         - exporterClasse(Classe classe, StringBuilder sb) : void
         + genererFichierTxt(String chemin, GestionnaireClasses gestionnaireClasses) : void
+        + exporterSourceList(GestionnaireClasses gestionnaireClasses) : HashMap<String, String>
     }
 
     class ExportateurSourcePlantUML #ffcccc{

@@ -198,4 +198,14 @@ public class GestionnaireClasses {
 
         return sb.toString();
     }
+
+    /*public Association getAssociationByClasses(Classe classe1, Classe classe2) {
+        for (Association association : associations) {
+            if ((association.getClasse1().equals(classe1) && association.getClasse2().equals(classe2)) ||
+                    (association.getClasse1().equals(classe2) && association.getClasse2().equals(classe1))) {
+                return association;
+            }
+        }
+        return null; //Aucun résultat trouvé
+    }*/
 }

@@ -128,6 +128,8 @@ public class VuePane extends BorderPane implements Observateur {
                         vPrincipale.setLayoutX(vPrincipale.getLayoutX() + deltaX);
                         vPrincipale.setLayoutY(vPrincipale.getLayoutY() + deltaY);
                         vPrincipale.setUserData(new double[]{event.getSceneX(), event.getSceneY()});
+                        //Mettre à jour les lignes et les cardinalités
+                        //mettreAJourLignesRelations(vBoxHashMap);
                     }
                     lignesGroup.getChildren().clear();
                     ajouterLignesRelations(vBoxHashMap);
@@ -176,6 +178,7 @@ public class VuePane extends BorderPane implements Observateur {
     //Vbox
     private VBox creerBoiteClasse(Classe c) {
         VBox vPrincipale = new VBox();
+        vPrincipale.setUserData(c);
         vPrincipale.setMinWidth(100);
         vPrincipale.setMaxWidth(120);
         vPrincipale.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -245,6 +248,13 @@ public class VuePane extends BorderPane implements Observateur {
     private void ajouterLigneRelation(VBox source, VBox cible, String typeRelation) {
         if (source == null || cible == null) return;
 
+        //Récupérer les objets Classe
+        /*Classe classeSource = (Classe) source.getUserData();
+        Classe classeCible = (Classe) cible.getUserData();
+
+        //Trouver l'association
+        Association association = modele.getGestionnaireClasses().getAssociationByClasses(classeSource, classeCible);*/
+
         //Créer une ligne
         Line ligne = new Line();
         ligne.setStartX(source.getLayoutX() + source.getWidth() / 2);
@@ -268,8 +278,17 @@ public class VuePane extends BorderPane implements Observateur {
         //Ajouter la ligne
         lignesGroup.getChildren().add(ligne);
 
-        //Ajouter la pointe de la flèche au trait
+        //Ajouter la pointe de flèche
         ajouterPointeDeFleche(ligne, typeRelation, lignesGroup);
+
+        //Ajouter la cardinalité si une association existe
+        /*if (association != null) {
+            Label cardinaliteLabel = new Label(association.getCardinalite());
+            cardinaliteLabel.setStyle("-fx-background-color: white; -fx-padding: 2;");
+            cardinaliteLabel.setLayoutX((ligne.getStartX() + ligne.getEndX()) / 2);
+            cardinaliteLabel.setLayoutY((ligne.getStartY() + ligne.getEndY()) / 2);
+            lignesGroup.getChildren().add(cardinaliteLabel);
+        }*/
     }
 
     //Ajoute une pointe aux traits de relation en fonction du type de relation
@@ -317,4 +336,64 @@ public class VuePane extends BorderPane implements Observateur {
             groupe.getChildren().add(fleche);
         }
     }
+
+    /*private void mettreAJourLignesRelations(Map<Classe, VBox> classeVBoxMap) {
+        for (Heritage h : modele.getGestionnaireClasses().getHeritages()) {
+            mettreAJourLigneRelation(classeVBoxMap.get(h.getClasseMere()), classeVBoxMap.get(h.getClasseFille()));
+        }
+        for (Association a : modele.getGestionnaireClasses().getAssociations()) {
+            mettreAJourLigneRelation(classeVBoxMap.get(a.getClasse1()), classeVBoxMap.get(a.getClasse2()));
+        }
+        for (Implementation i : modele.getGestionnaireClasses().getImplementations()) {
+            mettreAJourLigneRelation(classeVBoxMap.get(i.getClasseInterface()), classeVBoxMap.get(i.getClasseImplementation()));
+        }
+    }*/
+
+    /*private void mettreAJourLigneRelation(VBox source, VBox cible) {
+        if (source == null || cible == null) return;
+
+        //Recup l'association
+        Association association = modele.getGestionnaireClasses().getAssociationByClasses((Classe) source.getUserData(), (Classe) cible.getUserData());
+
+        //Trouve la ligne correspondante
+        for (javafx.scene.Node node : lignesGroup.getChildren()) {
+            if (node instanceof Line) {
+                Line ligne = (Line) node;
+
+                //Verif si la ligne correspond à cette relation
+                if (ligne.getStartX() == source.getLayoutX() + source.getWidth() / 2 &&
+                        ligne.getStartY() == source.getLayoutY() + source.getHeight() / 2 &&
+                        ligne.getEndX() == cible.getLayoutX() + cible.getWidth() / 2 &&
+                        ligne.getEndY() == cible.getLayoutY() + cible.getHeight() / 2) {
+
+                    //Met à jour la position de la ligne
+                    ligne.setStartX(source.getLayoutX() + source.getWidth() / 2);
+                    ligne.setStartY(source.getLayoutY() + source.getHeight() / 2);
+                    ligne.setEndX(cible.getLayoutX() + cible.getWidth() / 2);
+                    ligne.setEndY(cible.getLayoutY() + cible.getHeight() / 2);
+
+                    //Met à jour la cardinalité si présente
+                    if (association != null) {
+                        //Recherche le label de cardinalité
+                        Label cardinaliteLabel = null;
+                        for (javafx.scene.Node labelNode : lignesGroup.getChildren()) {
+                            if (labelNode instanceof Label) {
+                                cardinaliteLabel = (Label) labelNode;
+                                //Label au centre de la ligne
+                                if (cardinaliteLabel.getLayoutX() == (ligne.getStartX() + ligne.getEndX()) / 2 &&
+                                        cardinaliteLabel.getLayoutY() == (ligne.getStartY() + ligne.getEndY()) / 2) {
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (cardinaliteLabel != null) {
+                            cardinaliteLabel.setLayoutX((ligne.getStartX() + ligne.getEndX()) / 2);
+                            cardinaliteLabel.setLayoutY((ligne.getStartY() + ligne.getEndY()) / 2);
+                        }
+                    }
+                }
+            }
+        }
+    }*/
 }
