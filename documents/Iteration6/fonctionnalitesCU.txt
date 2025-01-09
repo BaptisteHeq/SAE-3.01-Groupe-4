@@ -1,3 +1,4 @@
 Fonctionnalités:
 Peaufinage de l'application
 - Ajout des exportateurs dans l'application
+- Placement des classes de manière "intelligente"

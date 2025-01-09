@@ -65,7 +65,6 @@ package "Gestion" {
         + construireGrapheDependances() : Map<Classe, List<Classe>>
         + trierClassesParDependances() : List<Classe>
         - triTopologiqueDFS(Classe classe, Map<Classe, List<Classe>> graphe, Set<Classe> visite, Set<Classe> enCours, List<Classe> ordre) : void
-        + getGrapheDependances() : String
         + getClasseByNom(String nom) : Classe
     }
 }
@@ -115,7 +114,7 @@ package "Import/Export" {
         + exporterImage(GestionnaireClasses gestionnaireClasses, String cheminSortie) : void
     }
 
-    class ExportateurSourceJava #98FB98{
+    class ExportateurSourceJava #ffcccc{
         + exporterSource(GestionnaireClasses gestionnaireClasses) : String
         - getJavaAcces(int acces) : String
         - exporterClasse(Classe classe, StringBuilder sb) : void
@@ -159,7 +158,6 @@ package "Vue et Modèle" {
         - centerPane : Pane
         - scaleFactor : double
         - scale : Scale
-        - scrollPane : ScrollPane
         - lignesGroup : Group
         - classesGroup : Group
         + VuePane(Modele modele)
@@ -170,6 +168,10 @@ package "Vue et Modèle" {
         - ajouterLignesRelations(Map<Classe, VBox> classeVBoxMap) : void
         - ajouterLigneRelation(VBox source, VBox cible, String typeRelation) : void
         - ajouterPointeDeFleche(Line ligne, String typeRelation, Group group) : void
+        - simulationRessort(Map<Classe, VBox> vBoxHashMap) : void
+        - appliquerForce(Classe c1, Classe c2, Map<Classe, VBox> vBoxHashMap, Map<Classe, double[]> forces, double l, double k) : void
+        - appliquerRepulsion(Classe c1, Classe c2, Map<Classe, VBox> vBoxHashMap, Map<Classe, double[]> forces, double forceDeRepulsion) : void
+
     }
 }
 
