@@ -1,6 +1,12 @@
 Fonctionnalités:
 - Ajouter des classes/méthodes
+- Ajouter de l'héritage et de l'implémentation
 
 Etapes:
+Ajout d'un bouton "Ajouter"
+Ajout d'un sous bouton "Ajouter une méthode"
+Ajout d'un sous bouton "Ajouter une classe"
+Ajout d'un sous bouton "Ajouter un lien d'héritage"
+Ajout d'un sous bouton "Ajouter un lien d'implémentation"
 
 Scénarios:
