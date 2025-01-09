@@ -3,6 +3,9 @@ package SAE;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ExportateurSourceJava {
     public String exporterSource(GestionnaireClasses gestionnaireClasses) {
@@ -11,6 +14,16 @@ public class ExportateurSourceJava {
             exporterClasse(classe, sb);
         }
         return sb.toString();
+    }
+
+    public HashMap<String, String> exporterSourceList(GestionnaireClasses gestionnaireClasses) {
+        HashMap rendu = new HashMap<String, List<String>>();
+        for (Classe classe : gestionnaireClasses.getClasses()) {
+            StringBuilder sb = new StringBuilder();
+            exporterClasse(classe, sb);
+            rendu.put(classe.getNom(), sb.toString());
+        }
+        return rendu;
     }
 
     private String getJavaAcces(int acces) {

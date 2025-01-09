@@ -12,7 +12,10 @@ import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.util.Pair;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 public class Main extends Application {
 
@@ -78,6 +81,12 @@ public class Main extends Application {
                 return;
             }
             System.out.println("PNG sélectionné");
+            ExportateurImagePlantUML exportateur = new ExportateurImagePlantUML();
+            //recup la date pour dater le fichier et ne pas avoir de conflit à la création car chaque fichier est unique
+            String date = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+            String cheminComplet = "outExportateur/ImageUML" + "_" + date + ".png";
+
+            exportateur.exporterImage(modele.getGestionnaireClasses(), cheminComplet);
         });
 
         MenuItem menuItemExportUML = new MenuItem("UML");
@@ -87,6 +96,53 @@ public class Main extends Application {
                 return;
             }
             System.out.println("UML sélectionné");
+            ExportateurSourcePlantUML exportateur = new ExportateurSourcePlantUML();
+            //recup la date pour dater le fichier et ne pas avoir de conflit à la création car chaque fichier est unique
+            String date = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+            String cheminComplet = "outExportateur/SourceUML" + "_" + date + ".txt";
+
+            String codeSource = exportateur.exporterDiagramme(modele.getGestionnaireClasses());
+            //on write le code source dans le fichier
+            try {
+                BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(cheminComplet));
+                writer.write(codeSource);
+                writer.close();
+                System.out.println("ecriture reussie");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        MenuItem menuItemExportJava = new MenuItem("Java");
+        menuItemExportJava.setOnAction(e -> {
+            if(modele.getGestionnaireClasses() == null){
+                montrerErreur("Aucun projet");
+                return;
+            }
+            System.out.println("Java sélectionné");
+            ExportateurSourceJava exportateur = new ExportateurSourceJava();
+            //recup la date pour dater le fichier et ne pas avoir de conflit à la création car chaque fichier est unique
+            String date = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+            String cheminComplet = "outExportateur/SourceJava" + "_" + date + "/";
+
+            // Création du répertoir
+            java.io.File directory = new java.io.File(cheminComplet);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            HashMap rendu = exportateur.exporterSourceList(modele.getGestionnaireClasses());
+            //on parcours les clés et les valeurs pour écrire les fichiers
+            for(Object nomObj : rendu.keySet()){
+                try {
+                    String nom = (String) nomObj;
+                    BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(cheminComplet + nom + ".java"));
+                    writer.write((String) rendu.get(nom));
+                    writer.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         });
 
         //Menu Help (à faire dans les dernières itérations)
@@ -368,6 +424,7 @@ public class Main extends Application {
         menuFichier.getItems().add(menuExporter);
         menuExporter.getItems().add(menuItemExportPNG);
         menuExporter.getItems().add(menuItemExportUML);
+        menuExporter.getItems().add(menuItemExportJava);
         menuAffichage.getItems().add(menuItemAffichageClasses);
         menuAjouter.getItems().addAll(menuItemAjouterClasse, menuItemAjouterMethode,menuHeritage,menuImplementation);
         menuHelp.getItems().add(menuItemAbout);

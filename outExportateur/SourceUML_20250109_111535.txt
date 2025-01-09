@@ -1,0 +1,30 @@
+@startuml
+
+class Film {
+}
+
+class DBConnection {
+}
+
+class CompilationMain {
+}
+
+class PrincipaleJDBC {
+}
+
+class main {
+  + main(String[]) : void
+}
+
+class RealisateurAbsentException {
+}
+
+class java.lang.RuntimeException {
+}
+
+class Personne {
+}
+
+java.lang.RuntimeException <|-- RealisateurAbsentException
+
+@enduml
