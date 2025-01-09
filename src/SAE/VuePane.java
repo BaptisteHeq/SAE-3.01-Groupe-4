@@ -60,6 +60,7 @@ public class VuePane extends BorderPane implements Observateur {
         lignesGroup.getChildren().clear();
         classesGroup.getChildren().clear();
 
+        //ancien placement des classes en cercle
         //1: calculer l'importance des classes
         Map<Classe, Integer> importance = calculerImportance(classesTriees);
 
