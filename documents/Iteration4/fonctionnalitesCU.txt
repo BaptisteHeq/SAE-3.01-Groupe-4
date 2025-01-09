@@ -1,6 +1,7 @@
 Fonctionnalités:
 - Afficher/Masquer les classes
 - Afficher/Masquer les méthodes
+- Importer des projets externes
 
 Etapes:
 - Créations des boutons pour les fonctionnalité

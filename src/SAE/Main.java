@@ -213,6 +213,10 @@ public class Main extends Application {
         MenuItem menuImplementation = new MenuItem("Ajouter une Implémentation");
 
         menuHeritage.setOnAction(event -> {
+            if(modele.getGestionnaireClasses() == null){
+                montrerErreur("Aucun projet");
+                return;
+            }
             Stage dialog = new Stage();
             dialog.setTitle("Ajouter un Héritage");
 
@@ -247,19 +251,11 @@ public class Main extends Application {
                             modele.notifierObservateurs();
                         }
                         else{
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                            alert.setTitle("Information");
-                            alert.setHeaderText("Erreur dans la création de l'héritage");
-                            alert.setContentText("Vous avez sélectionné deux fois la même classe");
-                            alert.show();
+                            montrerErreur("Une classe ne peut pas hériter d'elle-même");
                         }
                 }
                 else{
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information");
-                    alert.setHeaderText("Erreur dans la création de l'héritage");
-                    alert.setContentText("Une des deux classes n'a pas été spécifiée");
-                    alert.show();
+                    montrerErreur("Une des deux classes n'a pas été spécifiée");
                 }
 
                 dialog.close();
@@ -273,6 +269,10 @@ public class Main extends Application {
         });
 
         menuImplementation.setOnAction(event -> {
+            if(modele.getGestionnaireClasses() == null){
+                montrerErreur("Aucun projet");
+                return;
+            }
             Stage dialog = new Stage();
             dialog.setTitle("Ajouter une Implémentation");
 
@@ -284,13 +284,8 @@ public class Main extends Application {
             //ComboBox pour le choix de la classe mere
             ComboBox<String> comboClasseInterface = new ComboBox<>();
             for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
-                try {
-                    Class<?> c = Class.forName(classe.getNom());
-                    if(c.isInterface()){
-                        comboClasseInterface.getItems().add(classe.getNom());
-                    }
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                if(classe.getIsInterface()){
+                    comboClasseInterface.getItems().add(classe.getNom());
                 }
             }
             comboClasseInterface.setPromptText("Classe Interface");
@@ -298,13 +293,8 @@ public class Main extends Application {
             // ComboBox pour le choix de la classe fille
             ComboBox<String> comboClasseImplementation = new ComboBox<>();
             for (Classe classe : modele.getGestionnaireClasses().getClasses()) {
-                try {
-                    Class<?> c = Class.forName(classe.getNom());
-                    if(!c.isInterface()){
-                        comboClasseImplementation.getItems().add(classe.getNom());
-                    }
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                if(!classe.getIsInterface()){
+                    comboClasseImplementation.getItems().add(classe.getNom());
                 }
             }
             comboClasseImplementation.setPromptText("Classe Implementation");
@@ -320,11 +310,7 @@ public class Main extends Application {
                     modele.notifierObservateurs();
                 }
                 else{
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Information");
-                    alert.setHeaderText("Erreur dans la création de l'implémentation");
-                    alert.setContentText("Une des deux classes n'a pas été spécifiée");
-                    alert.show();
+                    montrerErreur("Une des deux classes n'a pas été spécifiée");
                 }
                 dialog.close();
             });
@@ -388,7 +374,16 @@ public class Main extends Application {
                 String nom = result.getKey();
                 String visibilite = result.getValue();
                 int visibiliteCode = visibilite.equals("Public") ? 1 : 0;
-                Classe nouvelleClasse = new Classe(nom, visibiliteCode);
+                CheckBox interfaceCheck = new CheckBox("Interface");
+                Alert interfaceDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                interfaceDialog.setTitle("Type de classe");
+                interfaceDialog.setHeaderText("Précisez si la classe est une interface ou non.");
+                interfaceDialog.getDialogPane().setContent(interfaceCheck);
+                boolean isInterface = interfaceDialog.showAndWait()
+                        .filter(response -> response == ButtonType.OK)
+                        .map(response -> interfaceCheck.isSelected())
+                        .orElse(false);
+                Classe nouvelleClasse = new Classe(nom, visibiliteCode,isInterface);
                 modele.getGestionnaireClasses().ajouterClasse(nouvelleClasse);
                 modele.notifierObservateurs();
             });

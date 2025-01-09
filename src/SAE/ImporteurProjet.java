@@ -50,12 +50,12 @@ public class ImporteurProjet {
             else if (Modifier.isPrivate(modificateurs)) acces = 2;
 
             // Crée l'objet Classe
-            Classe classe = new Classe(c.getName(), acces);
+            Classe classe = new Classe(c.getName(), acces,c.isInterface());
             gestionnaire.ajouterClasse(classe);
             // Gestion de l'héritage
             Class<?> superClasse = c.getSuperclass();
             if (superClasse != null && !superClasse.getName().equals("java.lang.Object")) {
-                Classe classeMere = new Classe(superClasse.getName(), 0); // On suppose que la classe mère est publique
+                Classe classeMere = new Classe(superClasse.getName(), 0,c.isInterface()); // On suppose que la classe mère est publique
                 gestionnaire.ajouterClasse(classeMere);
                 Heritage heritage = new Heritage(classeMere, classe);
                 gestionnaire.ajouterHeritage(heritage);
@@ -64,7 +64,7 @@ public class ImporteurProjet {
             // Gestion des interfaces implémentées
             Class<?>[] interfaces = c.getInterfaces();
             for (Class<?> inter : interfaces) {
-                Classe classeInterface = new Classe(inter.getName(), 0); // On suppose que l'interface est publique
+                Classe classeInterface = new Classe(inter.getName(), 0,c.isInterface()); // On suppose que l'interface est publique
                 gestionnaire.ajouterClasse(classeInterface);
                 Implementation implementation = new Implementation(classeInterface, classe);
                 gestionnaire.ajouterImplementation(implementation);
@@ -102,7 +102,7 @@ public class ImporteurProjet {
 
                 // Gestion des associations
                 if (!typeAttribut.isPrimitive() && !typeAttribut.getName().startsWith("java.")) {
-                    Classe classeAssociee = new Classe(typeAttribut.getName(), 0);
+                    Classe classeAssociee = new Classe(typeAttribut.getName(), 0,c.isInterface());
                     gestionnaire.ajouterClasse(classeAssociee);
                     Association association = new Association(classe, classeAssociee, attribut.getName(), "1..1");
                     gestionnaire.ajouterAssociation(association);
@@ -116,7 +116,7 @@ public class ImporteurProjet {
                         Type[] typeArguments = parameterizedType.getActualTypeArguments();
                         if (typeArguments.length > 0 && typeArguments[0] instanceof Class<?>){
                             Class<?> typeElement = (Class<?>) typeArguments[0];
-                            Classe classeAssociee = new Classe(typeElement.getName(), 0);
+                            Classe classeAssociee = new Classe(typeElement.getName(), 0,c.isInterface());
                             gestionnaire.ajouterClasse(classeAssociee);
                             gestionnaire.ajouterAssociation(new Association(classe, classeAssociee, attribut.getName(), "0..*"));
                         }

@@ -1,6 +1,7 @@
 Fonctionnalités:
 - Ajouter des classes/méthodes
 - Ajouter de l'héritage et de l'implémentation
+- Placement des classes de manière "intelligente"
 
 Etapes:
 Ajout d'un bouton "Ajouter"

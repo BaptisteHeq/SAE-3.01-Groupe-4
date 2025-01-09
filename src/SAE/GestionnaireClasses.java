@@ -183,7 +183,6 @@ public class GestionnaireClasses {
         return true;
     }
 
-
     public String getGrapheDependances() {
         Map<Classe, List<Classe>> graphe = construireGrapheDependances();
         StringBuilder sb = new StringBuilder();
